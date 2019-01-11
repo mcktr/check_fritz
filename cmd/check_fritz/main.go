@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/mcktr/check_fritz/pkg/fritz"
 )
@@ -47,10 +48,8 @@ func CheckRequiredFlags(hostname string, port string, username string, password 
 	return true
 }
 
-func CheckStatus(hostname string, port string, username string, password string) {
-	url := "https://" + hostname + ":" + port + "/upnp/control/wanpppconn1"
-
-	soapReq := fritz.NewSoapRequest(url, username, password, "WANPPPConnection", "GetInfo")
+func CheckConnectionStatus(hostname string, port string, username string, password string) {
+	soapReq := fritz.NewSoapRequest(username, password, hostname, port, "/upnp/control/wanpppconn1", "WANPPPConnection", "GetInfo")
 
 	err := fritz.DoSoapRequest(&soapReq)
 
@@ -58,21 +57,129 @@ func CheckStatus(hostname string, port string, username string, password string)
 		return
 	}
 
-	status, err := fritz.HandleSoapRequest(&soapReq)
+	var resp = fritz.GetWANPPPConnectionInfoResponse{}
+
+	err = fritz.HandleSoapRequest(&soapReq, &resp)
 
 	if HandleError(err) {
 		return
 	}
 
-	if status == "Connected" {
-		fmt.Print("OK - Connection Status: " + status + "\n")
+	if resp.NewConnectionStatus == "Connected" {
+		fmt.Print("OK - Connection Status: " + resp.NewConnectionStatus + "\n")
 
 		GlobalReturnCode = exitOk
 	} else {
-		fmt.Print("CRITICAL - Connection Status: " + status + "\n")
+		fmt.Print("CRITICAL - Connection Status: " + resp.NewConnectionStatus + "\n")
 
 		GlobalReturnCode = exitCritical
 	}
+}
+
+func CheckConnectionUptime(hostname, port string, username string, password string) {
+	soapReq := fritz.NewSoapRequest(username, password, hostname, port, "/upnp/control/wanpppconn1", "WANPPPConnection", "GetInfo")
+
+	err := fritz.DoSoapRequest(&soapReq)
+
+	if HandleError(err) {
+		return
+	}
+
+	var resp = fritz.GetWANPPPConnectionInfoResponse{}
+
+	err = fritz.HandleSoapRequest(&soapReq, &resp)
+
+	if HandleError(err) {
+		return
+	}
+
+	fmt.Print("OK - Connection Uptime: " + resp.NewUptime + "\n")
+
+	GlobalReturnCode = exitOk
+}
+
+func CheckDeviceUptime(hostname, port string, username string, password string) {
+	soapReq := fritz.NewSoapRequest(username, password, hostname, port, "/upnp/control/deviceinfo", "DeviceInfo", "GetInfo")
+
+	err := fritz.DoSoapRequest(&soapReq)
+
+	if HandleError(err) {
+		return
+	}
+
+	var resp = fritz.GetDeviceInfoResponse{}
+
+	err = fritz.HandleSoapRequest(&soapReq, &resp)
+
+	if HandleError(err) {
+		return
+	}
+
+	fmt.Print("OK - Device Uptime: " + resp.NewUpTime + "\n")
+
+	GlobalReturnCode = exitOk
+}
+
+func CheckDownstreamMax(hostname, port string, username string, password string) {
+	soapReq := fritz.NewSoapRequest(username, password, hostname, port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
+	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewSyncGroupIndex", "0"))
+
+	err := fritz.DoSoapRequest(&soapReq)
+
+	if HandleError(err) {
+		return
+	}
+
+	var resp = fritz.GetWANCommonInterfaceOnlineMonitorResponse{}
+
+	err = fritz.HandleSoapRequest(&soapReq, &resp)
+
+	if HandleError(err) {
+		return
+	}
+
+	downstream, err := strconv.Atoi(resp.Newmax_ds)
+
+	if HandleError(err) {
+		return
+	}
+
+	downstream = downstream * 8 / 1000000
+
+	fmt.Print("OK - Max Downstream: " + strconv.Itoa(downstream) + " Mbit/s \n")
+
+	GlobalReturnCode = exitOk
+}
+
+func CheckUpstreamMax(hostname, port string, username string, password string) {
+	soapReq := fritz.NewSoapRequest(username, password, hostname, port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
+	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewSyncGroupIndex", "0"))
+
+	err := fritz.DoSoapRequest(&soapReq)
+
+	if HandleError(err) {
+		return
+	}
+
+	var resp = fritz.GetWANCommonInterfaceOnlineMonitorResponse{}
+
+	err = fritz.HandleSoapRequest(&soapReq, &resp)
+
+	if HandleError(err) {
+		return
+	}
+
+	upstream, err := strconv.Atoi(resp.Newmax_us)
+
+	if HandleError(err) {
+		return
+	}
+
+	upstream = upstream * 8 / 1000000
+
+	fmt.Print("OK - Max Upstream: " + strconv.Itoa(upstream) + " Mbit/s \n")
+
+	GlobalReturnCode = exitOk
 }
 
 func HandleError(err error) bool {
@@ -90,6 +197,7 @@ func main() {
 	var port = flag.String("port", "49443", "SSL port")
 	var username = flag.String("username", "dslf-config", "Specify the username")
 	var password = flag.String("password", "", "Specify the password")
+	var method = flag.String("method", "connection_status", "Specify the used method. (Default: status)")
 
 	flag.Parse()
 
@@ -97,7 +205,21 @@ func main() {
 		os.Exit(exitUnknown)
 	}
 
-	CheckStatus(*hostname, *port, *username, *password)
+	switch *method {
+	case "connection_status":
+		CheckConnectionStatus(*hostname, *port, *username, *password)
+	case "connection_uptime":
+		CheckConnectionUptime(*hostname, *port, *username, *password)
+	case "device_uptime":
+		CheckDeviceUptime(*hostname, *port, *username, *password)
+	case "downstream_max":
+		CheckDownstreamMax(*hostname, *port, *username, *password)
+	case "upstream_max":
+		CheckUpstreamMax(*hostname, *port, *username, *password)
+	default:
+		fmt.Println("Unknown method.")
+		GlobalReturnCode = exitUnknown
+	}
 
 	os.Exit(GlobalReturnCode)
 }
