@@ -19,7 +19,7 @@ func DoDigestAuthentication(fSR *SoapRequest) {
 
 		digestHeader["username"] = fSR.Username
 		digestHeader["password"] = fSR.Password
-		digestHeader["uri"] = "/upnp/control/wanpppconn1"
+		digestHeader["uri"] = fSR.URLPath
 		digestHeader["method"] = "POST"
 
 		header1 := internalGetMD5(digestHeader["username"] + ":" + digestHeader["realm"] + ":" + digestHeader["password"])

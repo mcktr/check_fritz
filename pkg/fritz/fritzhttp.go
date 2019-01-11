@@ -74,22 +74,23 @@ func DoSoapRequest(fSR *SoapRequest) error {
 	return nil
 }
 
-func HandleSoapRequest(fSR *SoapRequest) (string, error) {
-	var gIR GetInfoResponse
-
+func HandleSoapRequest(fSR *SoapRequest, response Response) error {
 	body, err := ioutil.ReadAll(fSR.soapResponse.Body)
 
 	if err != nil {
 		panic(err)
 	}
 
-	err = xml.Unmarshal(body, &gIR)
+	err = xml.Unmarshal(body, &response)
 
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	return gIR.NewConnectionStatus, nil
+	// Enable for development to output response body
+	// fmt.Println(string(body))
+
+	return nil
 }
 
 func internalCreateNewSoapClient(fSR *SoapRequest) {
@@ -108,6 +109,13 @@ func internalNewSoapRequestBody(SoapRequest *SoapRequest) {
 	request.WriteString("<s:Envelope xmlns:s='http://schemas.xmlsoap.org/soap/envelope/' s:encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'>\n")
 	request.WriteString("<s:Body>\n")
 	request.WriteString("<u:" + SoapRequest.Action + " xmlns:u='urn:dslforum-org:service:" + SoapRequest.Service + ":1'>\n")
+
+	if (SoapRequest.XMLVariable != SoapRequestVariable{}) {
+		request.WriteString("<" + SoapRequest.XMLVariable.Name + ">\n")
+		request.WriteString(SoapRequest.XMLVariable.Value)
+		request.WriteString("</" + SoapRequest.XMLVariable.Name + ">\n")
+	}
+
 	request.WriteString("</u:" + SoapRequest.Action + ">\n")
 	request.WriteString("</s:Body>\n")
 	request.WriteString("</s:Envelope>")
