@@ -68,3 +68,16 @@ type GetWANCommonInterfaceOnlineMonitorResponse struct {
 	Newprio_default_bps      string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newprio_default_bps"`
 	Newprio_low_bps          string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newprio_low_bps"`
 }
+
+type GetInterfaceInfoResponse struct {
+	Response
+	NewUpgradeAvailable       string `xml:"Body>GetInfoResponse>NewUpgradeAvailable"`
+	NewPasswordRequired       string `xml:"Body>GetInfoResponse>NewPasswordRequired"`
+	NewPasswordUserSelectable string `xml:"Body>GetInfoResponse>NewPasswordUserSelectable"`
+	NewWarrantyDate           string `xml:"Body>GetInfoResponse>NewWarrantyDate"`
+	NewXAVMDEVersion          string `xml:"Body>GetInfoResponse>NewX_AVM-DE_Version"`
+	NewXAVMDEDownloadURL      string `xml:"Body>GetInfoResponse>NewX_AVM-DE_DownloadURL"`
+	NewXAVMDEInfoURL          string `xml:"Body>GetInfoResponse>NewX_AVM-DE_InfoURL"`
+	NewXAVMDEUpdateState      string `xml:"Body>GetInfoResponse>NewX_AVM-DE_UpdateState"`
+	NewXAVMDELaborVersion     string `xml:"Body>GetInfoResponse>NewX_AVM-DE_LaborVersion"`
+}

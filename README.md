@@ -51,10 +51,13 @@ Heimnetz -> Netzwerk -> Netzwerkeinstellungen ->  Heimnetzfreigaben -> Zugriff f
 
 ### Methods
 
-| Name                | Description                       |
-| ------------------- | --------------------------------- |
-| `connection_status` | WAN connection status.            |
-| `connection_uptime` | WAN connection uptime in seconds. |
-| `device_uptime`     | Device uptime in seconds.         |
-| `downstream_max`    | Maximum Downstream.               |
-| `upstream_max`      | Maximum Upstream.                 | 
+| Name                 | Description                       |
+| -------------------- | --------------------------------- |
+| `connection_status`  | WAN connection status.            |
+| `connection_uptime`  | WAN connection uptime in seconds. |
+| `device_uptime`      | Device uptime in seconds.         |
+| `downstream_max`     | Maximum downstream.               |
+| `upstream_max`       | Maximum upstream.                 |
+| `downstream_current` | Current downstream.               |
+| `upstream_current`   | Current upstream.                 |
+| `interface_update`   | Update state.                     |

@@ -79,6 +79,12 @@ func main() {
 		CheckDownstreamMax(*hostname, *port, *username, *password)
 	case "upstream_max":
 		CheckUpstreamMax(*hostname, *port, *username, *password)
+	case "downstream_current":
+		CheckDownstreamCurrent(*hostname, *port, *username, *password)
+	case "upstream_current":
+		CheckUpstreamCurrent(*hostname, *port, *username, *password)
+	case "interface_update":
+		CheckInterfaceUpdate(*hostname, *port, *username, *password)
 	default:
 		fmt.Println("Unknown method.")
 		GlobalReturnCode = exitUnknown
