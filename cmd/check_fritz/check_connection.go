@@ -6,8 +6,8 @@ import (
 	"github.com/mcktr/check_fritz/pkg/fritz"
 )
 
-func CheckConnectionStatus(hostname string, port string, username string, password string) {
-	soapReq := fritz.NewSoapRequest(username, password, hostname, port, "/upnp/control/wanpppconn1", "WANPPPConnection", "GetInfo")
+func CheckConnectionStatus(aI ArgumentInformation) {
+	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/wanpppconn1", "WANPPPConnection", "GetInfo")
 
 	err := fritz.DoSoapRequest(&soapReq)
 
@@ -34,8 +34,8 @@ func CheckConnectionStatus(hostname string, port string, username string, passwo
 	}
 }
 
-func CheckConnectionUptime(hostname, port string, username string, password string) {
-	soapReq := fritz.NewSoapRequest(username, password, hostname, port, "/upnp/control/wanpppconn1", "WANPPPConnection", "GetInfo")
+func CheckConnectionUptime(aI ArgumentInformation) {
+	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/wanpppconn1", "WANPPPConnection", "GetInfo")
 
 	err := fritz.DoSoapRequest(&soapReq)
 

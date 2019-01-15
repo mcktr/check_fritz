@@ -6,8 +6,8 @@ import (
 	"github.com/mcktr/check_fritz/pkg/fritz"
 )
 
-func CheckDeviceUptime(hostname, port string, username string, password string) {
-	soapReq := fritz.NewSoapRequest(username, password, hostname, port, "/upnp/control/deviceinfo", "DeviceInfo", "GetInfo")
+func CheckDeviceUptime(aI ArgumentInformation) {
+	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/deviceinfo", "DeviceInfo", "GetInfo")
 
 	err := fritz.DoSoapRequest(&soapReq)
 

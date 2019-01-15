@@ -17,6 +17,16 @@ var exitUnknown = 3
 
 var GlobalReturnCode = exitUnknown
 
+type ArgumentInformation struct {
+	Hostname string
+	Port     string
+	Username string
+	Password string
+	Method   string
+	Warning  float64
+	Critical float64
+}
+
 func GetVersion() string {
 	return "check_fritz version " + version
 }
@@ -55,36 +65,46 @@ func HandleError(err error) bool {
 	return false
 }
 
+func internalCheckLower(threshold float64, val float64) bool {
+	return threshold > val
+}
+
+func internalCheckUpper(threshold float64, val float64) bool {
+	return threshold < val
+}
+
 func main() {
 	var hostname = flag.String("hostname", "fritz.box", "Specify the hostname")
 	var port = flag.String("port", "49443", "SSL port")
 	var username = flag.String("username", "dslf-config", "Specify the username")
 	var password = flag.String("password", "", "Specify the password")
 	var method = flag.String("method", "connection_status", "Specify the used method. (Default: status)")
+	var warning = flag.Float64("warning", 0, "Specify the warning threshold")
+	var critical = flag.Float64("critical", 0, "Specify the critical threshold")
 
 	flag.Parse()
 
-	if !CheckRequiredFlags(*hostname, *port, *username, *password) {
+	aI := ArgumentInformation{*hostname, *port, *username, *password, *method, *warning, *critical}
+
+	if !CheckRequiredFlags(aI.Hostname, aI.Port, aI.Username, aI.Password) {
 		os.Exit(exitUnknown)
 	}
 
-	switch *method {
+	switch aI.Method {
 	case "connection_status":
-		CheckConnectionStatus(*hostname, *port, *username, *password)
+		CheckConnectionStatus(aI)
 	case "connection_uptime":
-		CheckConnectionUptime(*hostname, *port, *username, *password)
+		CheckConnectionUptime(aI)
 	case "device_uptime":
-		CheckDeviceUptime(*hostname, *port, *username, *password)
+		CheckDeviceUptime(aI)
 	case "downstream_max":
-		CheckDownstreamMax(*hostname, *port, *username, *password)
+		CheckDownstreamMax(aI)
 	case "upstream_max":
-		CheckUpstreamMax(*hostname, *port, *username, *password)
+		CheckUpstreamMax(aI)
 	case "downstream_current":
-		CheckDownstreamCurrent(*hostname, *port, *username, *password)
+		CheckDownstreamCurrent(aI)
 	case "upstream_current":
-		CheckUpstreamCurrent(*hostname, *port, *username, *password)
-	case "interface_update":
-		CheckInterfaceUpdate(*hostname, *port, *username, *password)
+		CheckUpstreamCurrent(aI)
 	default:
 		fmt.Println("Unknown method.")
 		GlobalReturnCode = exitUnknown
