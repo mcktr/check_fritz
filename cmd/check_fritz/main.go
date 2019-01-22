@@ -105,6 +105,8 @@ func main() {
 		CheckDownstreamCurrent(aI)
 	case "upstream_current":
 		CheckUpstreamCurrent(aI)
+	case "interface_update":
+		CheckInterfaceUpdate(aI)
 	default:
 		fmt.Println("Unknown method.")
 		GlobalReturnCode = exitUnknown
