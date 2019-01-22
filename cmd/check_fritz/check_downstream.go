@@ -8,8 +8,8 @@ import (
 	"github.com/mcktr/check_fritz/pkg/fritz"
 )
 
-func CheckDownstreamMax(hostname, port string, username string, password string) {
-	soapReq := fritz.NewSoapRequest(username, password, hostname, port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
+func CheckDownstreamMax(aI ArgumentInformation) {
+	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
 	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewSyncGroupIndex", "0"))
 
 	err := fritz.DoSoapRequest(&soapReq)
@@ -26,7 +26,7 @@ func CheckDownstreamMax(hostname, port string, username string, password string)
 		return
 	}
 
-	downstream, err := strconv.Atoi(resp.Newmax_ds)
+	downstream, err := strconv.ParseFloat(resp.Newmax_ds, 64)
 
 	if HandleError(err) {
 		return
@@ -34,13 +34,31 @@ func CheckDownstreamMax(hostname, port string, username string, password string)
 
 	downstream = downstream * 8 / 1000000
 
-	fmt.Print("OK - Max Downstream: " + strconv.Itoa(downstream) + " Mbit/s \n")
-
 	GlobalReturnCode = exitOk
+
+	if internalCheckLower(aI.Warning, downstream) {
+		GlobalReturnCode = exitWarning
+	}
+
+	if internalCheckLower(aI.Critical, downstream) {
+		GlobalReturnCode = exitCritical
+	}
+
+	switch GlobalReturnCode {
+	case exitOk:
+		fmt.Print("OK - Max Downstream: " + fmt.Sprintf("%.2f", downstream) + " Mbit/s \n")
+	case exitWarning:
+		fmt.Print("WARNING - Max Downstream " + fmt.Sprintf("%.2f", downstream) + " Mbit/s\n")
+	case exitCritical:
+		fmt.Print("CRITICAL - Max Downstream: " + fmt.Sprintf("%.2f", downstream) + " Mbit/s \n")
+	default:
+		GlobalReturnCode = exitUnknown
+		fmt.Print("UNKNWON - Not able to calculate maximum downstream\n")
+	}
 }
 
-func CheckDownstreamCurrent(hostname string, port string, username string, password string) {
-	soapReq := fritz.NewSoapRequest(username, password, hostname, port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
+func CheckDownstreamCurrent(aI ArgumentInformation) {
+	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
 	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewSyncGroupIndex", "0"))
 
 	err := fritz.DoSoapRequest(&soapReq)
@@ -59,7 +77,7 @@ func CheckDownstreamCurrent(hostname string, port string, username string, passw
 
 	downstreamWithHistory := strings.Split(resp.Newds_current_bps, ",")
 
-	downstream, err := strconv.ParseFloat(downstreamWithHistory[0], 32)
+	downstream, err := strconv.ParseFloat(downstreamWithHistory[0], 64)
 
 	if HandleError(err) {
 		return
@@ -67,7 +85,25 @@ func CheckDownstreamCurrent(hostname string, port string, username string, passw
 
 	downstream = downstream * 8 / 1000000
 
-	fmt.Print("OK - Current Downstream: " + fmt.Sprintf("%f", downstream) + " Mbit/s \n")
-
 	GlobalReturnCode = exitOk
+
+	if internalCheckUpper(aI.Warning, downstream) {
+		GlobalReturnCode = exitWarning
+	}
+
+	if internalCheckUpper(aI.Critical, downstream) {
+		GlobalReturnCode = exitCritical
+	}
+
+	switch GlobalReturnCode {
+	case exitOk:
+		fmt.Print("OK - Current Downstream: " + fmt.Sprintf("%.2f", downstream) + " Mbit/s \n")
+	case exitWarning:
+		fmt.Print("WARNING - Current Downstream " + fmt.Sprintf("%.2f", downstream) + " Mbit/s\n")
+	case exitCritical:
+		fmt.Print("CRITICAL - Current Downstream: " + fmt.Sprintf("%.2f", downstream) + " Mbit/s \n")
+	default:
+		GlobalReturnCode = exitUnknown
+		fmt.Print("UNKNWON - Not able to calculate current downstream\n")
+	}
 }
