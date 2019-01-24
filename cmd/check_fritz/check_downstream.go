@@ -26,7 +26,7 @@ func CheckDownstreamMax(aI ArgumentInformation) {
 		return
 	}
 
-	downstream, err := strconv.ParseFloat(resp.Newmax_ds, 64)
+	downstream, err := strconv.ParseFloat(resp.NewMaxDS, 64)
 
 	if HandleError(err) {
 		return
@@ -75,7 +75,7 @@ func CheckDownstreamCurrent(aI ArgumentInformation) {
 		return
 	}
 
-	downstreamWithHistory := strings.Split(resp.Newds_current_bps, ",")
+	downstreamWithHistory := strings.Split(resp.NewDSCurrentBPS, ",")
 
 	downstream, err := strconv.ParseFloat(downstreamWithHistory[0], 64)
 

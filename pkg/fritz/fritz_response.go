@@ -58,15 +58,15 @@ type GetWANCommonInterfaceOnlineMonitorResponse struct {
 	NewTotalNumberSyncGroups string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>NewTotalNumberSyncGroups"`
 	NewSyncGroupName         string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>NewSyncGroupName"`
 	NewSyncGroupMode         string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>NewSyncGroupMode"`
-	Newmax_ds                string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newmax_ds"`
-	Newmax_us                string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newmax_us"`
-	Newds_current_bps        string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newds_current_bps"`
-	Newmc_current_bps        string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newmc_current_bps"`
-	Newus_current_bps        string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newus_current_bps"`
-	Newprio_realtime_bps     string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newprio_realtime_bps"`
-	Newprio_high_bps         string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newprio_high_bps"`
-	Newprio_default_bps      string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newprio_default_bps"`
-	Newprio_low_bps          string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newprio_low_bps"`
+	NewMaxDS                 string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newmax_ds"`
+	NewMaxUS                 string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newmax_us"`
+	NewDSCurrentBPS          string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newds_current_bps"`
+	NewMCCurrentBPS          string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newmc_current_bps"`
+	NewUSCurrentBPS          string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newus_current_bps"`
+	NewPrioRealtimeBPS       string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newprio_realtime_bps"`
+	NewPrioHighBPS           string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newprio_high_bps"`
+	NewPrioDefaultBPS        string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newprio_default_bps"`
+	NewPrioLowBPS            string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newprio_low_bps"`
 }
 
 type GetInterfaceInfoResponse struct {
