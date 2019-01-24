@@ -65,22 +65,6 @@ func HandleError(err error) bool {
 	return false
 }
 
-func internalCheckLower(threshold float64, val float64) bool {
-	if threshold == -1.0 {
-		return false
-	}
-
-	return threshold > val
-}
-
-func internalCheckUpper(threshold float64, val float64) bool {
-	if threshold == -1.0 {
-		return false
-	}
-
-	return threshold < val
-}
-
 func main() {
 	var hostname = flag.String("hostname", "fritz.box", "Specify the hostname")
 	var port = flag.String("port", "49443", "SSL port")
