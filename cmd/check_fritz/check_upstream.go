@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/mcktr/check_fritz/pkg/fritz"
+	"github.com/mcktr/check_fritz/pkg/thresholds"
 )
 
 func CheckUpstreamMax(aI ArgumentInformation) {
@@ -36,11 +37,11 @@ func CheckUpstreamMax(aI ArgumentInformation) {
 
 	GlobalReturnCode = exitOk
 
-	if internalCheckLower(aI.Warning, upstream) {
+	if thresholds.CheckLower(aI.Warning, upstream) {
 		GlobalReturnCode = exitWarning
 	}
 
-	if internalCheckLower(aI.Critical, upstream) {
+	if thresholds.CheckLower(aI.Critical, upstream) {
 		GlobalReturnCode = exitCritical
 	}
 
@@ -87,11 +88,11 @@ func CheckUpstreamCurrent(aI ArgumentInformation) {
 
 	GlobalReturnCode = exitOk
 
-	if internalCheckUpper(aI.Warning, upstream) {
+	if thresholds.CheckUpper(aI.Warning, upstream) {
 		GlobalReturnCode = exitWarning
 	}
 
-	if internalCheckUpper(aI.Critical, upstream) {
+	if thresholds.CheckUpper(aI.Critical, upstream) {
 		GlobalReturnCode = exitCritical
 	}
 
