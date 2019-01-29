@@ -66,10 +66,18 @@ func HandleError(err error) bool {
 }
 
 func internalCheckLower(threshold float64, val float64) bool {
+	if threshold == -1.0 {
+		return false
+	}
+
 	return threshold > val
 }
 
 func internalCheckUpper(threshold float64, val float64) bool {
+	if threshold == -1.0 {
+		return false
+	}
+
 	return threshold < val
 }
 
@@ -79,8 +87,8 @@ func main() {
 	var username = flag.String("username", "dslf-config", "Specify the username")
 	var password = flag.String("password", "", "Specify the password")
 	var method = flag.String("method", "connection_status", "Specify the used method. (Default: status)")
-	var warning = flag.Float64("warning", 0, "Specify the warning threshold")
-	var critical = flag.Float64("critical", 0, "Specify the critical threshold")
+	var warning = flag.Float64("warning", -1, "Specify the warning threshold")
+	var critical = flag.Float64("critical", -1, "Specify the critical threshold")
 
 	flag.Parse()
 
