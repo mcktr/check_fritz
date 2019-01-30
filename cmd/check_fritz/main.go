@@ -25,6 +25,7 @@ type ArgumentInformation struct {
 	Method   string
 	Warning  float64
 	Critical float64
+	Index    int
 }
 
 func GetVersion() string {
@@ -73,10 +74,11 @@ func main() {
 	var method = flag.String("method", "connection_status", "Specify the used method. (Default: status)")
 	var warning = flag.Float64("warning", -1, "Specify the warning threshold")
 	var critical = flag.Float64("critical", -1, "Specify the critical threshold")
+	var index = flag.Int("index", -1, "Specify an index")
 
 	flag.Parse()
 
-	aI := ArgumentInformation{*hostname, *port, *username, *password, *method, *warning, *critical}
+	aI := ArgumentInformation{*hostname, *port, *username, *password, *method, *warning, *critical, *index}
 
 	if !CheckRequiredFlags(aI.Hostname, aI.Port, aI.Username, aI.Password) {
 		os.Exit(exitUnknown)
@@ -99,6 +101,8 @@ func main() {
 		CheckUpstreamCurrent(aI)
 	case "interface_update":
 		CheckInterfaceUpdate(aI)
+	case "smart_thermometer":
+		CheckSmartThermometer(aI)
 	default:
 		fmt.Println("Unknown method.")
 		GlobalReturnCode = exitUnknown
