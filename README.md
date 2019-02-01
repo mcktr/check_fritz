@@ -37,12 +37,15 @@ Heimnetz -> Netzwerk -> Netzwerkeinstellungen ->  Heimnetzfreigaben -> Zugriff f
 ## Usage
 
 | Parameter   | Description                                                                                   |
-| ----------- | --------------------------------------------------------------------------------------------- |
+|-------------|-----------------------------------------------------------------------------------------------|
 | `-hostname` | **Optional.** IP-Address or Hostname of the Fritz!Box. Defaults to `fritz.box`.               |
 | `-port`     | **Optional.** Port for TR-064 over SSL. Defaults to `49443`.                                  |
 | `-username` | **Optional.** Fritz!Box web interface Username for authentication. Defaults to `dslf-config`. |
 | `-password` | **Required.** Fritz!Box web interface Password for authentication.                            |
 | `-method`   | **Optional.** Defines the used check method. Defaults to `connection_status`.                 |
+| `-warning`  | **Optional.** Defines a warning threshold. Defaults to none.                                  |
+| `-critical` | **Optinal.** Defines a critical threshold. Defaults to none.                                  |
+| `-index`    | **Optinal.** Defines a index value required by some check methods. Defaults to none.          |
 
 > **Note:**
 >
@@ -51,13 +54,14 @@ Heimnetz -> Netzwerk -> Netzwerkeinstellungen ->  Heimnetzfreigaben -> Zugriff f
 
 ### Methods
 
-| Name                 | Description                       |
-| -------------------- | --------------------------------- |
-| `connection_status`  | WAN connection status.            |
-| `connection_uptime`  | WAN connection uptime in seconds. |
-| `device_uptime`      | Device uptime in seconds.         |
-| `downstream_max`     | Maximum downstream.               |
-| `upstream_max`       | Maximum upstream.                 |
-| `downstream_current` | Current downstream.               |
-| `upstream_current`   | Current upstream.                 |
-| `interface_update`   | Update state.                     |
+| Name                 | Description                            |
+|----------------------|----------------------------------------|
+| `connection_status`  | WAN connection status.                 |
+| `connection_uptime`  | WAN connection uptime in seconds.      |
+| `device_uptime`      | Device uptime in seconds.              |
+| `downstream_max`     | Maximum downstream.                    |
+| `upstream_max`       | Maximum upstream.                      |
+| `downstream_current` | Current downstream.                    |
+| `upstream_current`   | Current upstream.                      |
+| `interface_update`   | Update state.                          |
+| `smart_thermometer`  | Current temperature of the thermostat. |
