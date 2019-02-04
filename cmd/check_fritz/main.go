@@ -103,6 +103,10 @@ func main() {
 		CheckInterfaceUpdate(aI)
 	case "smart_thermometer":
 		CheckSmartThermometer(aI)
+	case "smart_socketpower":
+		CheckSmartSocketPower(aI)
+	case "smart_socketenergy":
+		CheckSmartSocketEnergy(aI)
 	default:
 		fmt.Println("Unknown method.")
 		GlobalReturnCode = exitUnknown
