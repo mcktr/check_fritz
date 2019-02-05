@@ -60,6 +60,6 @@ func CheckSmartThermometer(aI ArgumentInformation) {
 		fmt.Print("CRITICAL " + output + "\n")
 	default:
 		GlobalReturnCode = exitUnknown
-		fmt.Print("UNKNWON - Not able to calculate maximum downstream\n")
+		fmt.Print("UNKNWON - Not able to calculate thermostat temperature\n")
 	}
 }
