@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/mcktr/check_fritz/pkg/perfdata"
+
 	"github.com/mcktr/check_fritz/pkg/fritz"
 	"github.com/mcktr/check_fritz/pkg/thresholds"
 )
@@ -40,8 +42,17 @@ func CheckSmartThermometer(aI ArgumentInformation) {
 	}
 
 	currentTemp = currentTemp / 10.0
+	perfData := perfdata.CreatePerformanceData("temperature", currentTemp, "")
 
 	GlobalReturnCode = exitOk
+
+	if thresholds.GetThresholdsStatus(aI.Warning) {
+		perfData.SetWarning(aI.Warning)
+	}
+
+	if thresholds.GetThresholdsStatus(aI.Critical) {
+		perfData.SetCritical(aI.Critical)
+	}
 
 	if thresholds.CheckLower(aI.Warning, currentTemp) {
 		GlobalReturnCode = exitWarning
@@ -50,7 +61,8 @@ func CheckSmartThermometer(aI ArgumentInformation) {
 	if thresholds.CheckLower(aI.Critical, currentTemp) {
 		GlobalReturnCode = exitCritical
 	}
-	output := "- " + resp.NewProductName + " " + resp.NewFirmwareVersion + " - " + resp.NewDeviceName + " " + resp.NewPresent + " " + fmt.Sprintf("%.2f", currentTemp) + " °C"
+
+	output := "- " + resp.NewProductName + " " + resp.NewFirmwareVersion + " - " + resp.NewDeviceName + " " + resp.NewPresent + " " + fmt.Sprintf("%.2f", currentTemp) + " °C " + perfData.GetPerformanceDataAsString()
 
 	switch GlobalReturnCode {
 	case exitOk:
@@ -85,6 +97,7 @@ func CheckSmartSocketPower(aI ArgumentInformation) {
 	}
 
 	currentPower, err := strconv.ParseFloat(resp.NewMultimeterPower, 64)
+	perfData := perfdata.CreatePerformanceData("power", currentPower, "")
 
 	if HandleError(err) {
 		return
@@ -94,6 +107,14 @@ func CheckSmartSocketPower(aI ArgumentInformation) {
 
 	GlobalReturnCode = exitOk
 
+	if thresholds.GetThresholdsStatus(aI.Warning) {
+		perfData.SetWarning(aI.Warning)
+	}
+
+	if thresholds.GetThresholdsStatus(aI.Critical) {
+		perfData.SetCritical(aI.Critical)
+	}
+
 	if thresholds.CheckUpper(aI.Warning, currentPower) {
 		GlobalReturnCode = exitWarning
 	}
@@ -102,7 +123,7 @@ func CheckSmartSocketPower(aI ArgumentInformation) {
 		GlobalReturnCode = exitCritical
 	}
 
-	output := "- " + resp.NewProductName + " " + resp.NewFirmwareVersion + " - " + resp.NewDeviceName + " " + resp.NewPresent + " " + fmt.Sprintf("%.2f", currentPower) + " W"
+	output := "- " + resp.NewProductName + " " + resp.NewFirmwareVersion + " - " + resp.NewDeviceName + " " + resp.NewPresent + " " + fmt.Sprintf("%.2f", currentPower) + " W " + perfData.GetPerformanceDataAsString()
 
 	switch GlobalReturnCode {
 	case exitOk:
@@ -143,8 +164,17 @@ func CheckSmartSocketEnergy(aI ArgumentInformation) {
 	}
 
 	currentEnergy = currentEnergy / 1000.0
+	perfData := perfdata.CreatePerformanceData("energy", currentEnergy, "")
 
 	GlobalReturnCode = exitOk
+
+	if thresholds.GetThresholdsStatus(aI.Warning) {
+		perfData.SetWarning(aI.Warning)
+	}
+
+	if thresholds.GetThresholdsStatus(aI.Critical) {
+		perfData.SetCritical(aI.Critical)
+	}
 
 	if thresholds.CheckUpper(aI.Warning, currentEnergy) {
 		GlobalReturnCode = exitWarning
@@ -154,7 +184,7 @@ func CheckSmartSocketEnergy(aI ArgumentInformation) {
 		GlobalReturnCode = exitCritical
 	}
 
-	output := "- " + resp.NewProductName + " " + resp.NewFirmwareVersion + " - " + resp.NewDeviceName + " " + resp.NewPresent + " " + fmt.Sprintf("%.2f", currentEnergy) + " kWh"
+	output := "- " + resp.NewProductName + " " + resp.NewFirmwareVersion + " - " + resp.NewDeviceName + " " + resp.NewPresent + " " + fmt.Sprintf("%.2f", currentEnergy) + " kWh " + perfData.GetPerformanceDataAsString()
 
 	switch GlobalReturnCode {
 	case exitOk:
