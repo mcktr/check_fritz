@@ -9,6 +9,7 @@ import (
 	"github.com/mcktr/check_fritz/pkg/thresholds"
 )
 
+// CheckDownstreamMax checks the maximum downstream that is available on this internet connection
 func CheckDownstreamMax(aI ArgumentInformation) {
 	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
 	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewSyncGroupIndex", "0"))
@@ -58,6 +59,7 @@ func CheckDownstreamMax(aI ArgumentInformation) {
 	}
 }
 
+// CheckDownstreamCurrent checks the current used downstream
 func CheckDownstreamCurrent(aI ArgumentInformation) {
 	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
 	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewSyncGroupIndex", "0"))

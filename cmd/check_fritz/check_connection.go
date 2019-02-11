@@ -6,6 +6,7 @@ import (
 	"github.com/mcktr/check_fritz/pkg/fritz"
 )
 
+// CheckConnectionStatus checks the internet connection status
 func CheckConnectionStatus(aI ArgumentInformation) {
 	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/wanpppconn1", "WANPPPConnection", "GetInfo")
 
@@ -34,6 +35,7 @@ func CheckConnectionStatus(aI ArgumentInformation) {
 	}
 }
 
+// CheckConnectionUptime checks the uptime of the internet connection
 func CheckConnectionUptime(aI ArgumentInformation) {
 	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/wanpppconn1", "WANPPPConnection", "GetInfo")
 
