@@ -54,14 +54,16 @@ Heimnetz -> Netzwerk -> Netzwerkeinstellungen ->  Heimnetzfreigaben -> Zugriff f
 
 ### Methods
 
-| Name                 | Description                            |
-|----------------------|----------------------------------------|
-| `connection_status`  | WAN connection status.                 |
-| `connection_uptime`  | WAN connection uptime in seconds.      |
-| `device_uptime`      | Device uptime in seconds.              |
-| `downstream_max`     | Maximum downstream.                    |
-| `upstream_max`       | Maximum upstream.                      |
-| `downstream_current` | Current downstream.                    |
-| `upstream_current`   | Current upstream.                      |
-| `interface_update`   | Update state.                          |
-| `smart_thermometer`  | Current temperature of the thermostat. |
+| Name                 | Description                                                  |
+|----------------------|--------------------------------------------------------------|
+| `connection_status`  | WAN connection status.                                       |
+| `connection_uptime`  | WAN connection uptime in seconds.                            |
+| `device_uptime`      | Device uptime in seconds.                                    |
+| `downstream_max`     | Maximum downstream.                                          |
+| `upstream_max`       | Maximum upstream.                                            |
+| `downstream_current` | Current downstream.                                          |
+| `upstream_current`   | Current upstream.                                            |
+| `interface_update`   | Update state.                                                |
+| `smart_thermometer`  | Current temperature of a radiator thermostat.                |
+| `smart_socketpower`  | Current power consumption of a socket switch.                |
+| `smart_socketenergy` | Total power consumption of the last year of a socket switch. |
