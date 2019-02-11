@@ -8,6 +8,7 @@ import (
 	"github.com/mcktr/check_fritz/pkg/thresholds"
 )
 
+// CheckSmartThermometer checks the temperature of a smart home thermometer device
 func CheckSmartThermometer(aI ArgumentInformation) {
 	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
 	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewIndex", strconv.Itoa(aI.Index)))
@@ -64,6 +65,7 @@ func CheckSmartThermometer(aI ArgumentInformation) {
 	}
 }
 
+// CheckSmartSocketPower checks the current watt usage on the smart socket
 func CheckSmartSocketPower(aI ArgumentInformation) {
 	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
 	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewIndex", strconv.Itoa(aI.Index)))
@@ -115,6 +117,7 @@ func CheckSmartSocketPower(aI ArgumentInformation) {
 	}
 }
 
+// CheckSmartSocketEnergy checks total power consumption of the last year on the smart socket
 func CheckSmartSocketEnergy(aI ArgumentInformation) {
 	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
 	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewIndex", strconv.Itoa(aI.Index)))

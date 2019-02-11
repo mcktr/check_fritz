@@ -7,6 +7,7 @@ import (
 	"github.com/mcktr/check_fritz/pkg/fritz"
 )
 
+// CheckInterfaceUpdate checks if a new firmware is available
 func CheckInterfaceUpdate(aI ArgumentInformation) {
 	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/userif", "UserInterface", "GetInfo")
 

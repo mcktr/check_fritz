@@ -6,6 +6,7 @@ import (
 	"github.com/mcktr/check_fritz/pkg/fritz"
 )
 
+// CheckDeviceUptime checks the uptime of the device
 func CheckDeviceUptime(aI ArgumentInformation) {
 	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/deviceinfo", "DeviceInfo", "GetInfo")
 

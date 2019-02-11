@@ -7,7 +7,7 @@ import (
 )
 
 // program version
-var version string = "0.1"
+var version = "0.1"
 
 // internal exit codes
 var exitOk = 0
@@ -15,8 +15,10 @@ var exitWarning = 1
 var exitCritical = 2
 var exitUnknown = 3
 
+// GlobalReturnCode holds always the last set return code
 var GlobalReturnCode = exitUnknown
 
+// ArgumentInformation is the data structure for the passed arguments
 type ArgumentInformation struct {
 	Hostname string
 	Port     string
@@ -28,11 +30,11 @@ type ArgumentInformation struct {
 	Index    int
 }
 
-func GetVersion() string {
+func getVersion() string {
 	return "check_fritz version " + version
 }
 
-func CheckRequiredFlags(hostname string, port string, username string, password string) bool {
+func checkRequiredFlags(hostname string, port string, username string, password string) bool {
 	if hostname == "" {
 		fmt.Println("No hostname")
 		return false
@@ -56,6 +58,7 @@ func CheckRequiredFlags(hostname string, port string, username string, password 
 	return true
 }
 
+// HandleError is the global error handler for the programm
 func HandleError(err error) bool {
 	if err != nil {
 		fmt.Println(err)
@@ -80,7 +83,7 @@ func main() {
 
 	aI := ArgumentInformation{*hostname, *port, *username, *password, *method, *warning, *critical, *index}
 
-	if !CheckRequiredFlags(aI.Hostname, aI.Port, aI.Username, aI.Password) {
+	if !checkRequiredFlags(aI.Hostname, aI.Port, aI.Username, aI.Password) {
 		os.Exit(exitUnknown)
 	}
 
