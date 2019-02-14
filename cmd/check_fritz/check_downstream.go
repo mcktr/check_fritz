@@ -13,7 +13,7 @@ import (
 
 // CheckDownstreamMax checks the maximum downstream that is available on this internet connection
 func CheckDownstreamMax(aI ArgumentInformation) {
-	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
+	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
 	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewSyncGroupIndex", "0"))
 
 	err := fritz.DoSoapRequest(&soapReq)
@@ -41,20 +41,20 @@ func CheckDownstreamMax(aI ArgumentInformation) {
 
 	GlobalReturnCode = exitOk
 
-	if thresholds.GetThresholdsStatus(aI.Warning) {
-		perfData.SetWarning(aI.Warning)
+	if thresholds.IsSet(aI.Warning) {
+		perfData.SetWarning(*aI.Warning)
+
+		if thresholds.CheckLower(*aI.Warning, downstream) {
+			GlobalReturnCode = exitWarning
+		}
 	}
 
-	if thresholds.GetThresholdsStatus(aI.Critical) {
-		perfData.SetCritical(aI.Critical)
-	}
+	if thresholds.IsSet(aI.Critical) {
+		perfData.SetCritical(*aI.Critical)
 
-	if thresholds.CheckLower(aI.Warning, downstream) {
-		GlobalReturnCode = exitWarning
-	}
-
-	if thresholds.CheckLower(aI.Critical, downstream) {
-		GlobalReturnCode = exitCritical
+		if thresholds.CheckLower(*aI.Critical, downstream) {
+			GlobalReturnCode = exitCritical
+		}
 	}
 
 	output := " - Max Downstream: " + fmt.Sprintf("%.2f", downstream) + " Mbit/s " + perfData.GetPerformanceDataAsString()
@@ -74,7 +74,7 @@ func CheckDownstreamMax(aI ArgumentInformation) {
 
 // CheckDownstreamCurrent checks the current used downstream
 func CheckDownstreamCurrent(aI ArgumentInformation) {
-	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
+	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
 	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewSyncGroupIndex", "0"))
 
 	err := fritz.DoSoapRequest(&soapReq)
@@ -104,20 +104,20 @@ func CheckDownstreamCurrent(aI ArgumentInformation) {
 
 	GlobalReturnCode = exitOk
 
-	if thresholds.GetThresholdsStatus(aI.Warning) {
-		perfData.SetWarning(aI.Warning)
+	if thresholds.IsSet(aI.Warning) {
+		perfData.SetWarning(*aI.Warning)
+
+		if thresholds.CheckUpper(*aI.Warning, downstream) {
+			GlobalReturnCode = exitWarning
+		}
 	}
 
-	if thresholds.GetThresholdsStatus(aI.Critical) {
-		perfData.SetCritical(aI.Critical)
-	}
+	if thresholds.IsSet(aI.Critical) {
+		perfData.SetCritical(*aI.Critical)
 
-	if thresholds.CheckUpper(aI.Warning, downstream) {
-		GlobalReturnCode = exitWarning
-	}
-
-	if thresholds.CheckUpper(aI.Critical, downstream) {
-		GlobalReturnCode = exitCritical
+		if thresholds.CheckUpper(*aI.Critical, downstream) {
+			GlobalReturnCode = exitCritical
+		}
 	}
 
 	output := " - Current Downstream: " + fmt.Sprintf("%.2f", downstream) + " Mbit/s \n " + perfData.GetPerformanceDataAsString()

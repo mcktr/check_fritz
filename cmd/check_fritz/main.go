@@ -1,9 +1,11 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"os"
+	"strconv"
+
+	cmdline "github.com/galdor/go-cmdline"
 )
 
 // program version
@@ -20,14 +22,57 @@ var GlobalReturnCode = exitUnknown
 
 // ArgumentInformation is the data structure for the passed arguments
 type ArgumentInformation struct {
-	Hostname string
-	Port     string
-	Username string
-	Password string
-	Method   string
-	Warning  float64
-	Critical float64
-	Index    int
+	Hostname *string
+	Port     *string
+	Username *string
+	Password *string
+	Method   *string
+	Warning  *float64
+	Critical *float64
+	Index    *int
+}
+
+func createRequiredArgumentInformation(hostname string, port string, username string, password string, method string) ArgumentInformation {
+	var ai ArgumentInformation
+
+	ai.Hostname = &hostname
+	ai.Port = &port
+	ai.Username = &username
+	ai.Password = &password
+	ai.Method = &method
+
+	return ai
+}
+
+func (ai *ArgumentInformation) createWarningThreshold(warning string) {
+	warn, err := strconv.ParseFloat(warning, 64)
+
+	if HandleError(err) {
+		return
+	}
+
+	ai.Warning = &warn
+
+}
+
+func (ai *ArgumentInformation) createCriticalThreshold(critical string) {
+	crit, err := strconv.ParseFloat(critical, 64)
+
+	if HandleError(err) {
+		return
+	}
+
+	ai.Critical = &crit
+}
+
+func (ai *ArgumentInformation) createIndex(index string) {
+	ind, err := strconv.Atoi(index)
+
+	if HandleError(err) {
+		return
+	}
+
+	ai.Index = &ind
 }
 
 func getVersion() string {
@@ -70,24 +115,49 @@ func HandleError(err error) bool {
 }
 
 func main() {
-	var hostname = flag.String("hostname", "fritz.box", "Specify the hostname")
-	var port = flag.String("port", "49443", "SSL port")
-	var username = flag.String("username", "dslf-config", "Specify the username")
-	var password = flag.String("password", "", "Specify the password")
-	var method = flag.String("method", "connection_status", "Specify the used method. (Default: status)")
-	var warning = flag.Float64("warning", -1, "Specify the warning threshold")
-	var critical = flag.Float64("critical", -1, "Specify the critical threshold")
-	var index = flag.Int("index", -1, "Specify an index")
+	cmdline := cmdline.New()
 
-	flag.Parse()
+	cmdline.AddOption("H", "hostname", "value", "Specifies the hostname. (Default: fritz.box)")
+	cmdline.AddOption("P", "port", "value", "Specifies the SSL port. (Default: 49443)")
+	cmdline.AddOption("u", "username", "value", "Specifies the username. (Default: dslf-config)")
+	cmdline.AddOption("p", "password", "value", "Specifies the password.")
+	cmdline.AddOption("m", "method", "value", "Specifies the check method. (Default: connection_status)")
+	cmdline.AddOption("w", "warning", "value", "Specifies the warning threshold.")
+	cmdline.AddOption("c", "critical", "value", "Specifies the critical threshold.")
+	cmdline.AddOption("i", "index", "value", "Specifies the index.")
 
-	aI := ArgumentInformation{*hostname, *port, *username, *password, *method, *warning, *critical, *index}
+	cmdline.SetOptionDefault("hostname", "fritz.box")
+	cmdline.SetOptionDefault("port", "49443")
+	cmdline.SetOptionDefault("username", "dslf-config")
+	cmdline.SetOptionDefault("method", "connection_status")
 
-	if !checkRequiredFlags(aI.Hostname, aI.Port, aI.Username, aI.Password) {
+	cmdline.Parse(os.Args)
+
+	hostname := cmdline.OptionValue("hostname")
+	port := cmdline.OptionValue("port")
+	username := cmdline.OptionValue("username")
+	password := cmdline.OptionValue("password")
+	method := cmdline.OptionValue("method")
+
+	aI := createRequiredArgumentInformation(hostname, port, username, password, method)
+
+	if cmdline.IsOptionSet("warning") {
+		aI.createWarningThreshold(cmdline.OptionValue("warning"))
+	}
+
+	if cmdline.IsOptionSet("critical") {
+		aI.createCriticalThreshold(cmdline.OptionValue("critical"))
+	}
+
+	if cmdline.IsOptionSet("index") {
+		aI.createIndex(cmdline.OptionValue("index"))
+	}
+
+	if !checkRequiredFlags(*aI.Hostname, *aI.Port, *aI.Username, *aI.Password) {
 		os.Exit(exitUnknown)
 	}
 
-	switch aI.Method {
+	switch *aI.Method {
 	case "connection_status":
 		CheckConnectionStatus(aI)
 	case "connection_uptime":

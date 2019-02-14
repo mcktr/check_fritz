@@ -12,8 +12,8 @@ import (
 
 // CheckSmartThermometer checks the temperature of a smart home thermometer device
 func CheckSmartThermometer(aI ArgumentInformation) {
-	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
-	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewIndex", strconv.Itoa(aI.Index)))
+	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
+	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewIndex", strconv.Itoa(*aI.Index)))
 
 	err := fritz.DoSoapRequest(&soapReq)
 
@@ -46,20 +46,20 @@ func CheckSmartThermometer(aI ArgumentInformation) {
 
 	GlobalReturnCode = exitOk
 
-	if thresholds.GetThresholdsStatus(aI.Warning) {
-		perfData.SetWarning(aI.Warning)
+	if thresholds.IsSet(aI.Warning) {
+		perfData.SetWarning(*aI.Warning)
+
+		if thresholds.CheckLower(*aI.Warning, currentTemp) {
+			GlobalReturnCode = exitWarning
+		}
 	}
 
-	if thresholds.GetThresholdsStatus(aI.Critical) {
-		perfData.SetCritical(aI.Critical)
-	}
+	if thresholds.IsSet(aI.Critical) {
+		perfData.SetCritical(*aI.Critical)
 
-	if thresholds.CheckLower(aI.Warning, currentTemp) {
-		GlobalReturnCode = exitWarning
-	}
-
-	if thresholds.CheckLower(aI.Critical, currentTemp) {
-		GlobalReturnCode = exitCritical
+		if thresholds.CheckLower(*aI.Critical, currentTemp) {
+			GlobalReturnCode = exitCritical
+		}
 	}
 
 	output := "- " + resp.NewProductName + " " + resp.NewFirmwareVersion + " - " + resp.NewDeviceName + " " + resp.NewPresent + " " + fmt.Sprintf("%.2f", currentTemp) + " °C " + perfData.GetPerformanceDataAsString()
@@ -79,8 +79,8 @@ func CheckSmartThermometer(aI ArgumentInformation) {
 
 // CheckSmartSocketPower checks the current watt usage on the smart socket
 func CheckSmartSocketPower(aI ArgumentInformation) {
-	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
-	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewIndex", strconv.Itoa(aI.Index)))
+	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
+	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewIndex", strconv.Itoa(*aI.Index)))
 
 	err := fritz.DoSoapRequest(&soapReq)
 
@@ -107,20 +107,20 @@ func CheckSmartSocketPower(aI ArgumentInformation) {
 
 	GlobalReturnCode = exitOk
 
-	if thresholds.GetThresholdsStatus(aI.Warning) {
-		perfData.SetWarning(aI.Warning)
+	if thresholds.IsSet(aI.Warning) {
+		perfData.SetWarning(*aI.Warning)
+
+		if thresholds.CheckUpper(*aI.Warning, currentPower) {
+			GlobalReturnCode = exitWarning
+		}
 	}
 
-	if thresholds.GetThresholdsStatus(aI.Critical) {
-		perfData.SetCritical(aI.Critical)
-	}
+	if thresholds.IsSet(aI.Critical) {
+		perfData.SetCritical(*aI.Critical)
 
-	if thresholds.CheckUpper(aI.Warning, currentPower) {
-		GlobalReturnCode = exitWarning
-	}
-
-	if thresholds.CheckUpper(aI.Critical, currentPower) {
-		GlobalReturnCode = exitCritical
+		if thresholds.CheckUpper(*aI.Critical, currentPower) {
+			GlobalReturnCode = exitCritical
+		}
 	}
 
 	output := "- " + resp.NewProductName + " " + resp.NewFirmwareVersion + " - " + resp.NewDeviceName + " " + resp.NewPresent + " " + fmt.Sprintf("%.2f", currentPower) + " W " + perfData.GetPerformanceDataAsString()
@@ -140,8 +140,8 @@ func CheckSmartSocketPower(aI ArgumentInformation) {
 
 // CheckSmartSocketEnergy checks total power consumption of the last year on the smart socket
 func CheckSmartSocketEnergy(aI ArgumentInformation) {
-	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
-	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewIndex", strconv.Itoa(aI.Index)))
+	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
+	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewIndex", strconv.Itoa(*aI.Index)))
 
 	err := fritz.DoSoapRequest(&soapReq)
 
@@ -168,20 +168,20 @@ func CheckSmartSocketEnergy(aI ArgumentInformation) {
 
 	GlobalReturnCode = exitOk
 
-	if thresholds.GetThresholdsStatus(aI.Warning) {
-		perfData.SetWarning(aI.Warning)
+	if thresholds.IsSet(aI.Warning) {
+		perfData.SetWarning(*aI.Warning)
+
+		if thresholds.CheckUpper(*aI.Warning, currentEnergy) {
+			GlobalReturnCode = exitWarning
+		}
 	}
 
-	if thresholds.GetThresholdsStatus(aI.Critical) {
-		perfData.SetCritical(aI.Critical)
-	}
+	if thresholds.IsSet(aI.Critical) {
+		perfData.SetCritical(*aI.Critical)
 
-	if thresholds.CheckUpper(aI.Warning, currentEnergy) {
-		GlobalReturnCode = exitWarning
-	}
-
-	if thresholds.CheckUpper(aI.Critical, currentEnergy) {
-		GlobalReturnCode = exitCritical
+		if thresholds.CheckUpper(*aI.Critical, currentEnergy) {
+			GlobalReturnCode = exitCritical
+		}
 	}
 
 	output := "- " + resp.NewProductName + " " + resp.NewFirmwareVersion + " - " + resp.NewDeviceName + " " + resp.NewPresent + " " + fmt.Sprintf("%.2f", currentEnergy) + " kWh " + perfData.GetPerformanceDataAsString()

@@ -9,7 +9,7 @@ import (
 
 // CheckInterfaceUpdate checks if a new firmware is available
 func CheckInterfaceUpdate(aI ArgumentInformation) {
-	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/userif", "UserInterface", "GetInfo")
+	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/userif", "UserInterface", "GetInfo")
 
 	err := fritz.DoSoapRequest(&soapReq)
 
