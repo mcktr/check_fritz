@@ -1,8 +1,10 @@
 package fritz
 
+// Response is the overriding data structure for the SOAP responses
 type Response interface {
 }
 
+// GetWANPPPConnectionInfoResponse is the data structure for responses from WANPPPConnection
 type GetWANPPPConnectionInfoResponse struct {
 	Response
 	NewEnable                  string `xml:"Body>GetInfoResponse>NewEnable"`
@@ -37,6 +39,7 @@ type GetWANPPPConnectionInfoResponse struct {
 	NewDNSOverrideAllowed      string `xml:"Body>GetInfoResponse>NewDNSOverrideAllowed"`
 }
 
+// GetDeviceInfoResponse is the data structure for responses from DeviceInfo
 type GetDeviceInfoResponse struct {
 	Response
 	NewManufacturerName string `xml:"Body>GetInfoResponse>NewManufacturerName"`
@@ -53,6 +56,7 @@ type GetDeviceInfoResponse struct {
 	NewDeviceLog        string `xml:"Body>GetInfoResponse>NewDeviceLog"`
 }
 
+// GetWANCommonInterfaceOnlineMonitorResponse is the data structure for responses from WANCommonInterfaceConfig
 type GetWANCommonInterfaceOnlineMonitorResponse struct {
 	Response
 	NewTotalNumberSyncGroups string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>NewTotalNumberSyncGroups"`
@@ -69,6 +73,7 @@ type GetWANCommonInterfaceOnlineMonitorResponse struct {
 	NewPrioLowBPS            string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newprio_low_bps"`
 }
 
+// GetInterfaceInfoResponse is the data structure for responses from UserInterface
 type GetInterfaceInfoResponse struct {
 	Response
 	NewUpgradeAvailable       string `xml:"Body>GetInfoResponse>NewUpgradeAvailable"`
@@ -82,6 +87,7 @@ type GetInterfaceInfoResponse struct {
 	NewXAVMDELaborVersion     string `xml:"Body>GetInfoResponse>NewX_AVM-DE_LaborVersion"`
 }
 
+// GetSmartDeviceInfoResponse is the data structure for responses from X_AVM-DE_Homeauto
 type GetSmartDeviceInfoResponse struct {
 	Response
 	NewAIN                    string `xml:"Body>GetGenericDeviceInfosResponse>NewAIN"`
