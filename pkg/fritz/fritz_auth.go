@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// DoDigestAuthentication does a digist authentication request
 func DoDigestAuthentication(fSR *SoapRequest) {
 
 	headerDigsetAuth := fSR.soapResponse.Header.Get("WWW-Authenticate")

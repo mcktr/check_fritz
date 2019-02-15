@@ -2,6 +2,7 @@ package fritz
 
 import "net/http"
 
+// SoapRequest is the data structure for a SOAP request including the response
 type SoapRequest struct {
 	Username         string
 	Password         string
@@ -18,6 +19,7 @@ type SoapRequest struct {
 	soapDigestAuth   map[string]string
 }
 
+// SoapRequestVariable is the data structure for a variable that can injected in the SOAP request
 type SoapRequestVariable struct {
 	Name  string
 	Value string
@@ -38,6 +40,7 @@ func NewSoapRequest(username string, password string, hostname string, port stri
 	return fSR
 }
 
+// NewSoapRequestVariable creates a new SoapRequestVariable
 func NewSoapRequestVariable(name string, value string) *SoapRequestVariable {
 	var sRV SoapRequestVariable
 
@@ -47,6 +50,7 @@ func NewSoapRequestVariable(name string, value string) *SoapRequestVariable {
 	return &sRV
 }
 
+// AddSoapRequestVariable adds a SoapRequestVariable to a SoapRequest
 func AddSoapRequestVariable(soapRequest *SoapRequest, soapRequestVariable *SoapRequestVariable) {
 	soapRequest.XMLVariable = *soapRequestVariable
 }

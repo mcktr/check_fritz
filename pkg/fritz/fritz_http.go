@@ -9,6 +9,7 @@ import (
 	"net/http"
 )
 
+// DoSoapRequest does two request to authenticate and handle the SOAP request
 func DoSoapRequest(fSR *SoapRequest) error {
 	internalCreateNewSoapClient(fSR)
 	internalPrepareHTTPClient(fSR)
@@ -24,7 +25,7 @@ func DoSoapRequest(fSR *SoapRequest) error {
 
 	internalPrepareRequestHeader(fSR, fSR.Action, fSR.Service)
 
-	// first request is always unauthenticated due to digest authenticatioin works
+	// first request is always unauthenticated due to how digest authenticatioin works
 
 	resp, err := fSR.soapClient.Do(&fSR.soapRequest)
 
@@ -74,6 +75,7 @@ func DoSoapRequest(fSR *SoapRequest) error {
 	return nil
 }
 
+// HandleSoapRequest handles the SOAP response
 func HandleSoapRequest(fSR *SoapRequest, response Response) error {
 	body, err := ioutil.ReadAll(fSR.soapResponse.Body)
 
