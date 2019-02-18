@@ -1,5 +1,7 @@
 # check_fritz
 
+![CI status](https://travis-ci.org/mcktr/check_fritz.svg?branch=master)
+
 > **Note:**
 >
 > This is an early development version. Things are unstable and possibly don't work correctly.
