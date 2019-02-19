@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/mcktr/check_fritz/pkg/fritz"
+	"github.com/mcktr/check_fritz/pkg/perfdata"
 	"github.com/mcktr/check_fritz/pkg/thresholds"
 )
 
@@ -35,9 +36,17 @@ func CheckUpstreamMax(aI ArgumentInformation) {
 	}
 
 	upstream = upstream * 8 / 1000000
+	perfData := perfdata.CreatePerformanceData("upstream_max", upstream, "")
 
 	GlobalReturnCode = exitOk
 
+	if thresholds.GetThresholdsStatus(aI.Warning) {
+		perfData.SetWarning(aI.Warning)
+	}
+
+	if thresholds.GetThresholdsStatus(aI.Critical) {
+		perfData.SetCritical(aI.Critical)
+	}
 	if thresholds.CheckLower(aI.Warning, upstream) {
 		GlobalReturnCode = exitWarning
 	}
@@ -46,13 +55,15 @@ func CheckUpstreamMax(aI ArgumentInformation) {
 		GlobalReturnCode = exitCritical
 	}
 
+	output := " - Max Upstream: " + fmt.Sprintf("%.2f", upstream) + " Mbit/s " + perfData.GetPerformanceDataAsString()
+
 	switch GlobalReturnCode {
 	case exitOk:
-		fmt.Print("OK - Max Upstream: " + fmt.Sprintf("%.2f", upstream) + " Mbit/s \n")
+		fmt.Print("OK" + output + "\n")
 	case exitWarning:
-		fmt.Print("WARNING - Max Upstream " + fmt.Sprintf("%.2f", upstream) + " Mbit/s\n")
+		fmt.Print("WARNING" + output + "\n")
 	case exitCritical:
-		fmt.Print("CRITICAL - Max Upstream: " + fmt.Sprintf("%.2f", upstream) + " Mbit/s \n")
+		fmt.Print("CRITICAL" + output + "\n")
 	default:
 		GlobalReturnCode = exitUnknown
 		fmt.Print("UNKNWON - Not able to calculate maximum upstream\n")
@@ -87,8 +98,17 @@ func CheckUpstreamCurrent(aI ArgumentInformation) {
 	}
 
 	upstream = upstream * 8 / 1000000
+	perfData := perfdata.CreatePerformanceData("upstream_current", upstream, "")
 
 	GlobalReturnCode = exitOk
+
+	if thresholds.GetThresholdsStatus(aI.Warning) {
+		perfData.SetWarning(aI.Warning)
+	}
+
+	if thresholds.GetThresholdsStatus(aI.Critical) {
+		perfData.SetCritical(aI.Critical)
+	}
 
 	if thresholds.CheckUpper(aI.Warning, upstream) {
 		GlobalReturnCode = exitWarning
@@ -98,13 +118,15 @@ func CheckUpstreamCurrent(aI ArgumentInformation) {
 		GlobalReturnCode = exitCritical
 	}
 
+	output := " - Current Upstream: " + fmt.Sprintf("%.2f", upstream) + " Mbit/s \n " + perfData.GetPerformanceDataAsString()
+
 	switch GlobalReturnCode {
 	case exitOk:
-		fmt.Print("OK - Current Upstream: " + fmt.Sprintf("%.2f", upstream) + " Mbit/s \n")
+		fmt.Print("OK" + output + "\n")
 	case exitWarning:
-		fmt.Print("WARNING - Current Upstream " + fmt.Sprintf("%.2f", upstream) + " Mbit/s\n")
+		fmt.Print("WARNING" + output + "\n")
 	case exitCritical:
-		fmt.Print("CRITICAL - Current Upstream: " + fmt.Sprintf("%.2f", upstream) + " Mbit/s \n")
+		fmt.Print("CRITICAL" + output + "\n")
 	default:
 		GlobalReturnCode = exitUnknown
 		fmt.Print("UNKNWON - Not able to calculate current upstream\n")

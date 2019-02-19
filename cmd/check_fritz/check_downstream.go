@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/mcktr/check_fritz/pkg/perfdata"
+
 	"github.com/mcktr/check_fritz/pkg/fritz"
 	"github.com/mcktr/check_fritz/pkg/thresholds"
 )
@@ -29,6 +31,7 @@ func CheckDownstreamMax(aI ArgumentInformation) {
 	}
 
 	downstream, err := strconv.ParseFloat(resp.NewMaxDS, 64)
+	perfData := perfdata.CreatePerformanceData("downstream_max", downstream, "")
 
 	if HandleError(err) {
 		return
@@ -38,6 +41,14 @@ func CheckDownstreamMax(aI ArgumentInformation) {
 
 	GlobalReturnCode = exitOk
 
+	if thresholds.GetThresholdsStatus(aI.Warning) {
+		perfData.SetWarning(aI.Warning)
+	}
+
+	if thresholds.GetThresholdsStatus(aI.Critical) {
+		perfData.SetCritical(aI.Critical)
+	}
+
 	if thresholds.CheckLower(aI.Warning, downstream) {
 		GlobalReturnCode = exitWarning
 	}
@@ -46,13 +57,15 @@ func CheckDownstreamMax(aI ArgumentInformation) {
 		GlobalReturnCode = exitCritical
 	}
 
+	output := " - Max Downstream: " + fmt.Sprintf("%.2f", downstream) + " Mbit/s " + perfData.GetPerformanceDataAsString()
+
 	switch GlobalReturnCode {
 	case exitOk:
-		fmt.Print("OK - Max Downstream: " + fmt.Sprintf("%.2f", downstream) + " Mbit/s \n")
+		fmt.Print("OK" + output + "\n")
 	case exitWarning:
-		fmt.Print("WARNING - Max Downstream " + fmt.Sprintf("%.2f", downstream) + " Mbit/s\n")
+		fmt.Print("WARNING" + output + "\n")
 	case exitCritical:
-		fmt.Print("CRITICAL - Max Downstream: " + fmt.Sprintf("%.2f", downstream) + " Mbit/s \n")
+		fmt.Print("CRITICAL" + output + "\n")
 	default:
 		GlobalReturnCode = exitUnknown
 		fmt.Print("UNKNWON - Not able to calculate maximum downstream\n")
@@ -87,8 +100,17 @@ func CheckDownstreamCurrent(aI ArgumentInformation) {
 	}
 
 	downstream = downstream * 8 / 1000000
+	perfData := perfdata.CreatePerformanceData("downstream_current", downstream, "")
 
 	GlobalReturnCode = exitOk
+
+	if thresholds.GetThresholdsStatus(aI.Warning) {
+		perfData.SetWarning(aI.Warning)
+	}
+
+	if thresholds.GetThresholdsStatus(aI.Critical) {
+		perfData.SetCritical(aI.Critical)
+	}
 
 	if thresholds.CheckUpper(aI.Warning, downstream) {
 		GlobalReturnCode = exitWarning
@@ -98,13 +120,15 @@ func CheckDownstreamCurrent(aI ArgumentInformation) {
 		GlobalReturnCode = exitCritical
 	}
 
+	output := " - Current Downstream: " + fmt.Sprintf("%.2f", downstream) + " Mbit/s \n " + perfData.GetPerformanceDataAsString()
+
 	switch GlobalReturnCode {
 	case exitOk:
-		fmt.Print("OK - Current Downstream: " + fmt.Sprintf("%.2f", downstream) + " Mbit/s \n")
+		fmt.Print("OK" + output + "\n")
 	case exitWarning:
-		fmt.Print("WARNING - Current Downstream " + fmt.Sprintf("%.2f", downstream) + " Mbit/s\n")
+		fmt.Print("WARNING" + output + "\n")
 	case exitCritical:
-		fmt.Print("CRITICAL - Current Downstream: " + fmt.Sprintf("%.2f", downstream) + " Mbit/s \n")
+		fmt.Print("CRITICAL" + output + "\n")
 	default:
 		GlobalReturnCode = exitUnknown
 		fmt.Print("UNKNWON - Not able to calculate current downstream\n")

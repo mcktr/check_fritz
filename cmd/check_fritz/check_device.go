@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/mcktr/check_fritz/pkg/fritz"
+	"github.com/mcktr/check_fritz/pkg/perfdata"
 )
 
 // CheckDeviceUptime checks the uptime of the device
@@ -24,7 +26,15 @@ func CheckDeviceUptime(aI ArgumentInformation) {
 		return
 	}
 
-	fmt.Print("OK - Device Uptime: " + resp.NewUpTime + "\n")
+	uptime, err := strconv.ParseFloat(resp.NewUpTime, 64)
+
+	if HandleError(err) {
+		return
+	}
+
+	perfData := perfdata.CreatePerformanceData("uptime", uptime, "s")
+
+	fmt.Print("OK - Device Uptime: " + fmt.Sprintf("%.0f", uptime) + " " + perfData.GetPerformanceDataAsString() + "\n")
 
 	GlobalReturnCode = exitOk
 }

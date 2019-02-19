@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"strconv"
+
+	"github.com/mcktr/check_fritz/pkg/perfdata"
 
 	"github.com/mcktr/check_fritz/pkg/fritz"
 )
@@ -53,7 +56,15 @@ func CheckConnectionUptime(aI ArgumentInformation) {
 		return
 	}
 
-	fmt.Print("OK - Connection Uptime: " + resp.NewUptime + "\n")
+	uptime, err := strconv.ParseFloat(resp.NewUptime, 64)
+
+	if HandleError(err) {
+		return
+	}
+
+	perfData := perfdata.CreatePerformanceData("uptime", uptime, "s")
+
+	fmt.Print("OK - Connection Uptime: " + fmt.Sprintf("%.f", uptime) + " " + perfData.GetPerformanceDataAsString() + "\n")
 
 	GlobalReturnCode = exitOk
 }
