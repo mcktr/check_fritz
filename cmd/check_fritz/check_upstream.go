@@ -12,7 +12,7 @@ import (
 
 // CheckUpstreamMax checks the maximum upstream that is available on this internet connection
 func CheckUpstreamMax(aI ArgumentInformation) {
-	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
+	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
 	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewSyncGroupIndex", "0"))
 
 	err := fritz.DoSoapRequest(&soapReq)
@@ -40,18 +40,18 @@ func CheckUpstreamMax(aI ArgumentInformation) {
 
 	GlobalReturnCode = exitOk
 
-	if thresholds.GetThresholdsStatus(aI.Warning) {
-		perfData.SetWarning(aI.Warning)
+	if thresholds.IsSet(aI.Warning) {
+		perfData.SetWarning(*aI.Warning)
 	}
 
-	if thresholds.GetThresholdsStatus(aI.Critical) {
-		perfData.SetCritical(aI.Critical)
+	if thresholds.IsSet(aI.Critical) {
+		perfData.SetCritical(*aI.Critical)
 	}
-	if thresholds.CheckLower(aI.Warning, upstream) {
+	if thresholds.CheckLower(*aI.Warning, upstream) {
 		GlobalReturnCode = exitWarning
 	}
 
-	if thresholds.CheckLower(aI.Critical, upstream) {
+	if thresholds.CheckLower(*aI.Critical, upstream) {
 		GlobalReturnCode = exitCritical
 	}
 
@@ -72,7 +72,7 @@ func CheckUpstreamMax(aI ArgumentInformation) {
 
 // CheckUpstreamCurrent checks the current used upstream
 func CheckUpstreamCurrent(aI ArgumentInformation) {
-	soapReq := fritz.NewSoapRequest(aI.Username, aI.Password, aI.Hostname, aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
+	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
 	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewSyncGroupIndex", "0"))
 
 	err := fritz.DoSoapRequest(&soapReq)
@@ -102,20 +102,20 @@ func CheckUpstreamCurrent(aI ArgumentInformation) {
 
 	GlobalReturnCode = exitOk
 
-	if thresholds.GetThresholdsStatus(aI.Warning) {
-		perfData.SetWarning(aI.Warning)
+	if thresholds.IsSet(aI.Warning) {
+		perfData.SetWarning(*aI.Warning)
+
+		if thresholds.CheckUpper(*aI.Warning, upstream) {
+			GlobalReturnCode = exitWarning
+		}
 	}
 
-	if thresholds.GetThresholdsStatus(aI.Critical) {
-		perfData.SetCritical(aI.Critical)
-	}
+	if thresholds.IsSet(aI.Critical) {
+		perfData.SetCritical(*aI.Critical)
 
-	if thresholds.CheckUpper(aI.Warning, upstream) {
-		GlobalReturnCode = exitWarning
-	}
-
-	if thresholds.CheckUpper(aI.Critical, upstream) {
-		GlobalReturnCode = exitCritical
+		if thresholds.CheckUpper(*aI.Critical, upstream) {
+			GlobalReturnCode = exitCritical
+		}
 	}
 
 	output := " - Current Upstream: " + fmt.Sprintf("%.2f", upstream) + " Mbit/s \n " + perfData.GetPerformanceDataAsString()

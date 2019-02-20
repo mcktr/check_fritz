@@ -38,16 +38,16 @@ Heimnetz -> Netzwerk -> Netzwerkeinstellungen ->  Heimnetzfreigaben -> Zugriff f
 
 ## Usage
 
-| Parameter   | Description                                                                                   |
-|-------------|-----------------------------------------------------------------------------------------------|
-| `-hostname` | **Optional.** IP-Address or Hostname of the Fritz!Box. Defaults to `fritz.box`.               |
-| `-port`     | **Optional.** Port for TR-064 over SSL. Defaults to `49443`.                                  |
-| `-username` | **Optional.** Fritz!Box web interface Username for authentication. Defaults to `dslf-config`. |
-| `-password` | **Required.** Fritz!Box web interface Password for authentication.                            |
-| `-method`   | **Optional.** Defines the used check method. Defaults to `connection_status`.                 |
-| `-warning`  | **Optional.** Defines a warning threshold. Defaults to none.                                  |
-| `-critical` | **Optinal.** Defines a critical threshold. Defaults to none.                                  |
-| `-index`    | **Optinal.** Defines a index value required by some check methods. Defaults to none.          |
+| Parameter (short) | Parameter (long) | Description                                                                                     |
+| ---               | ------------     | ----------------------------------------------------------------------------------------------- |
+| `-H`              | `--hostname`     | **Optional.** IP-Address or Hostname of the Fritz!Box. Defaults to `fritz.box`.                 |
+| `-P`              | `--port`         | **Optional.** Port for TR-064 over SSL. Defaults to `49443`.                                    |
+| `-u`              | `--username`     | **Optional.** Fritz!Box web interface Username for authentication. Defaults to `dslf-config`.   |
+| `-p`              | `--password`     | **Required.** Fritz!Box web interface Password for authentication.                              |
+| `-m`              | `--method`       | **Optional.** Defines the used check method. Defaults to `connection_status`.                   |
+| `-w`              | `--warning`      | **Optional.** Defines a warning threshold. Defaults to none.                                    |
+| `-c`              | `--critical`     | **Optinal.** Defines a critical threshold. Defaults to none.                                    |
+| `-i`              | `--index`        | **Optinal.** Defines a index value required by some check methods. Defaults to none.            |
 
 > **Note:**
 >

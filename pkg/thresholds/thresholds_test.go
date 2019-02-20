@@ -2,6 +2,22 @@ package thresholds
 
 import "testing"
 
+func TestIsSet(t *testing.T) {
+	result := IsSet(nil)
+
+	if result != false {
+		t.Errorf("IsSet was incorrect, got: %t, want: %t", result, false)
+	}
+
+	f := 7.6
+
+	result = IsSet(&f)
+
+	if result != true {
+		t.Errorf("IsSet was incorrect, got: %t, want: %t", result, true)
+	}
+}
+
 func TestCheckLower(t *testing.T) {
 	result := CheckLower(3, 2.9)
 
