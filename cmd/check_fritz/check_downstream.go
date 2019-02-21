@@ -31,13 +31,13 @@ func CheckDownstreamMax(aI ArgumentInformation) {
 	}
 
 	downstream, err := strconv.ParseFloat(resp.NewMaxDS, 64)
-	perfData := perfdata.CreatePerformanceData("downstream_max", downstream, "")
 
 	if HandleError(err) {
 		return
 	}
 
 	downstream = downstream * 8 / 1000000
+	perfData := perfdata.CreatePerformanceData("downstream_max", downstream, "")
 
 	GlobalReturnCode = exitOk
 
