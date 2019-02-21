@@ -97,13 +97,13 @@ func CheckSmartSocketPower(aI ArgumentInformation) {
 	}
 
 	currentPower, err := strconv.ParseFloat(resp.NewMultimeterPower, 64)
-	perfData := perfdata.CreatePerformanceData("power", currentPower, "")
 
 	if HandleError(err) {
 		return
 	}
 
 	currentPower = currentPower / 100.0
+	perfData := perfdata.CreatePerformanceData("power", currentPower, "")
 
 	GlobalReturnCode = exitOk
 
