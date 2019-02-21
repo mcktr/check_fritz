@@ -42,17 +42,18 @@ func CheckUpstreamMax(aI ArgumentInformation) {
 
 	if thresholds.IsSet(aI.Warning) {
 		perfData.SetWarning(*aI.Warning)
+
+		if thresholds.CheckLower(*aI.Warning, upstream) {
+			GlobalReturnCode = exitWarning
+		}
 	}
 
 	if thresholds.IsSet(aI.Critical) {
 		perfData.SetCritical(*aI.Critical)
-	}
-	if thresholds.CheckLower(*aI.Warning, upstream) {
-		GlobalReturnCode = exitWarning
-	}
 
-	if thresholds.CheckLower(*aI.Critical, upstream) {
-		GlobalReturnCode = exitCritical
+		if thresholds.CheckLower(*aI.Critical, upstream) {
+			GlobalReturnCode = exitCritical
+		}
 	}
 
 	output := " - Max Upstream: " + fmt.Sprintf("%.2f", upstream) + " Mbit/s " + perfData.GetPerformanceDataAsString()
