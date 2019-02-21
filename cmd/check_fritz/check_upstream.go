@@ -119,7 +119,7 @@ func CheckUpstreamCurrent(aI ArgumentInformation) {
 		}
 	}
 
-	output := " - Current Upstream: " + fmt.Sprintf("%.2f", upstream) + " Mbit/s \n " + perfData.GetPerformanceDataAsString()
+	output := " - Current Upstream: " + fmt.Sprintf("%.2f", upstream) + " Mbit/s " + perfData.GetPerformanceDataAsString()
 
 	switch GlobalReturnCode {
 	case exitOk:
