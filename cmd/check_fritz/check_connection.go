@@ -56,15 +56,20 @@ func CheckConnectionUptime(aI ArgumentInformation) {
 		return
 	}
 
-	uptime, err := strconv.ParseFloat(resp.NewUptime, 64)
+	uptime, err := strconv.Atoi(resp.NewUptime)
 
 	if HandleError(err) {
 		return
 	}
 
-	perfData := perfdata.CreatePerformanceData("uptime", uptime, "s")
+	days := uptime / 86400
+	hours := (uptime / 3600) - (days * 24)
+	minutes := (uptime / 60) - (days * 1440) - (hours * 60)
+	seconds := uptime % 60
+	output := fmt.Sprintf("%dd %dh %dm %ds", days, hours, minutes, seconds)
+	perfData := perfdata.CreatePerformanceData("uptime", float64(uptime), "s")
 
-	fmt.Print("OK - Connection Uptime: " + fmt.Sprintf("%.f", uptime) + " " + perfData.GetPerformanceDataAsString() + "\n")
+	fmt.Print("OK - Connection Uptime: " + fmt.Sprintf("%d", uptime) + " seconds (" + output + ") " + perfData.GetPerformanceDataAsString() + "\n")
 
 	GlobalReturnCode = exitOk
 }

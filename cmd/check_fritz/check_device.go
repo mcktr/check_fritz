@@ -26,15 +26,21 @@ func CheckDeviceUptime(aI ArgumentInformation) {
 		return
 	}
 
-	uptime, err := strconv.ParseFloat(resp.NewUpTime, 64)
+	uptime, err := strconv.Atoi(resp.NewUpTime)
 
 	if HandleError(err) {
 		return
 	}
 
-	perfData := perfdata.CreatePerformanceData("uptime", uptime, "s")
+	days := uptime / 86400
+	hours := (uptime / 3600) - (days * 24)
+	minutes := (uptime / 60) - (days * 1440) - (hours * 60)
+	seconds := uptime % 60
+	output := fmt.Sprintf("%dd %dh %dm %ds", days, hours, minutes, seconds)
 
-	fmt.Print("OK - Device Uptime: " + fmt.Sprintf("%.0f", uptime) + " " + perfData.GetPerformanceDataAsString() + "\n")
+	perfData := perfdata.CreatePerformanceData("uptime", float64(uptime), "s")
+
+	fmt.Print("OK - Device Uptime: " + fmt.Sprintf("%d", uptime) + " seconds (" + output + ") " + perfData.GetPerformanceDataAsString() + "\n")
 
 	GlobalReturnCode = exitOk
 }
