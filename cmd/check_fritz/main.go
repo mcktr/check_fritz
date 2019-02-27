@@ -79,24 +79,19 @@ func getVersion() string {
 	return "check_fritz version " + version
 }
 
-func checkRequiredFlags(hostname string, port string, username string, password string) bool {
-	if hostname == "" {
+func checkRequiredFlags(aI *ArgumentInformation) bool {
+	if aI.Hostname == nil || *aI.Hostname == "" {
 		fmt.Println("No hostname")
 		return false
 	}
 
-	if port == "" {
+	if aI.Port == nil || *aI.Port == "" {
 		fmt.Println("No port")
 		return false
 	}
 
-	if username == "" {
+	if aI.Username == nil || *aI.Username == "" {
 		fmt.Println("No username")
-		return false
-	}
-
-	if password == "" {
-		fmt.Println("No password")
 		return false
 	}
 
@@ -153,7 +148,7 @@ func main() {
 		aI.createIndex(cmdline.OptionValue("index"))
 	}
 
-	if !checkRequiredFlags(*aI.Hostname, *aI.Port, *aI.Username, *aI.Password) {
+	if !checkRequiredFlags(&aI) {
 		os.Exit(exitUnknown)
 	}
 
