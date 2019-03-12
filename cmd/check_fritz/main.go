@@ -75,8 +75,9 @@ func (ai *ArgumentInformation) createIndex(index string) {
 	ai.Index = &ind
 }
 
-func getVersion() string {
-	return "check_fritz version " + version
+func printVersion() {
+	fmt.Println("check_fritz v" + version)
+	GlobalReturnCode = exitOk
 }
 
 func checkRequiredFlags(aI *ArgumentInformation) bool {
@@ -121,6 +122,8 @@ func main() {
 	cmdline.AddOption("c", "critical", "value", "Specifies the critical threshold.")
 	cmdline.AddOption("i", "index", "value", "Specifies the index.")
 
+	cmdline.AddFlag("V", "version", "Returns the version")
+
 	cmdline.SetOptionDefault("hostname", "fritz.box")
 	cmdline.SetOptionDefault("port", "49443")
 	cmdline.SetOptionDefault("username", "dslf-config")
@@ -128,57 +131,61 @@ func main() {
 
 	cmdline.Parse(os.Args)
 
-	hostname := cmdline.OptionValue("hostname")
-	port := cmdline.OptionValue("port")
-	username := cmdline.OptionValue("username")
-	password := cmdline.OptionValue("password")
-	method := cmdline.OptionValue("method")
+	if cmdline.IsOptionSet("version") {
+		printVersion()
+	} else {
 
-	aI := createRequiredArgumentInformation(hostname, port, username, password, method)
+		hostname := cmdline.OptionValue("hostname")
+		port := cmdline.OptionValue("port")
+		username := cmdline.OptionValue("username")
+		password := cmdline.OptionValue("password")
+		method := cmdline.OptionValue("method")
 
-	if cmdline.IsOptionSet("warning") {
-		aI.createWarningThreshold(cmdline.OptionValue("warning"))
+		aI := createRequiredArgumentInformation(hostname, port, username, password, method)
+
+		if cmdline.IsOptionSet("warning") {
+			aI.createWarningThreshold(cmdline.OptionValue("warning"))
+		}
+
+		if cmdline.IsOptionSet("critical") {
+			aI.createCriticalThreshold(cmdline.OptionValue("critical"))
+		}
+
+		if cmdline.IsOptionSet("index") {
+			aI.createIndex(cmdline.OptionValue("index"))
+		}
+
+		if !checkRequiredFlags(&aI) {
+			os.Exit(exitUnknown)
+		}
+
+		switch *aI.Method {
+		case "connection_status":
+			CheckConnectionStatus(aI)
+		case "connection_uptime":
+			CheckConnectionUptime(aI)
+		case "device_uptime":
+			CheckDeviceUptime(aI)
+		case "downstream_max":
+			CheckDownstreamMax(aI)
+		case "upstream_max":
+			CheckUpstreamMax(aI)
+		case "downstream_current":
+			CheckDownstreamCurrent(aI)
+		case "upstream_current":
+			CheckUpstreamCurrent(aI)
+		case "interface_update":
+			CheckInterfaceUpdate(aI)
+		case "smart_thermometer":
+			CheckSmartThermometer(aI)
+		case "smart_socketpower":
+			CheckSmartSocketPower(aI)
+		case "smart_socketenergy":
+			CheckSmartSocketEnergy(aI)
+		default:
+			fmt.Println("Unknown method.")
+			GlobalReturnCode = exitUnknown
+		}
 	}
-
-	if cmdline.IsOptionSet("critical") {
-		aI.createCriticalThreshold(cmdline.OptionValue("critical"))
-	}
-
-	if cmdline.IsOptionSet("index") {
-		aI.createIndex(cmdline.OptionValue("index"))
-	}
-
-	if !checkRequiredFlags(&aI) {
-		os.Exit(exitUnknown)
-	}
-
-	switch *aI.Method {
-	case "connection_status":
-		CheckConnectionStatus(aI)
-	case "connection_uptime":
-		CheckConnectionUptime(aI)
-	case "device_uptime":
-		CheckDeviceUptime(aI)
-	case "downstream_max":
-		CheckDownstreamMax(aI)
-	case "upstream_max":
-		CheckUpstreamMax(aI)
-	case "downstream_current":
-		CheckDownstreamCurrent(aI)
-	case "upstream_current":
-		CheckUpstreamCurrent(aI)
-	case "interface_update":
-		CheckInterfaceUpdate(aI)
-	case "smart_thermometer":
-		CheckSmartThermometer(aI)
-	case "smart_socketpower":
-		CheckSmartSocketPower(aI)
-	case "smart_socketenergy":
-		CheckSmartSocketEnergy(aI)
-	default:
-		fmt.Println("Unknown method.")
-		GlobalReturnCode = exitUnknown
-	}
-
 	os.Exit(GlobalReturnCode)
 }
