@@ -38,16 +38,16 @@ Heimnetz -> Netzwerk -> Netzwerkeinstellungen ->  Heimnetzfreigaben -> Zugriff f
 
 ## Usage
 
-| Parameter (short) | Parameter (long) | Description                                                                                     |
-| ---               | ------------     | ----------------------------------------------------------------------------------------------- |
-| `-H`              | `--hostname`     | **Optional.** IP-Address or Hostname of the Fritz!Box. Defaults to `fritz.box`.                 |
-| `-P`              | `--port`         | **Optional.** Port for TR-064 over SSL. Defaults to `49443`.                                    |
-| `-u`              | `--username`     | **Optional.** Fritz!Box web interface Username for authentication. Defaults to `dslf-config`.   |
-| `-p`              | `--password`     | **Required.** Fritz!Box web interface Password for authentication.                              |
-| `-m`              | `--method`       | **Optional.** Defines the used check method. Defaults to `connection_status`.                   |
-| `-w`              | `--warning`      | **Optional.** Defines a warning threshold. Defaults to none.                                    |
-| `-c`              | `--critical`     | **Optinal.** Defines a critical threshold. Defaults to none.                                    |
-| `-i`              | `--index`        | **Optinal.** Defines a index value required by some check methods. Defaults to none.            |
+| Parameter (short) | Parameter (long) | Description                                                                                   |
+|-------------------|------------------|-----------------------------------------------------------------------------------------------|
+| `-H`              | `--hostname`     | **Optional.** IP-Address or Hostname of the Fritz!Box. Defaults to `fritz.box`.               |
+| `-P`              | `--port`         | **Optional.** Port for TR-064 over SSL. Defaults to `49443`.                                  |
+| `-u`              | `--username`     | **Optional.** Fritz!Box web interface Username for authentication. Defaults to `dslf-config`. |
+| `-p`              | `--password`     | **Required.** Fritz!Box web interface Password for authentication.                            |
+| `-m`              | `--method`       | **Optional.** Defines the used check method. Defaults to `connection_status`.                 |
+| `-w`              | `--warning`      | **Optional.** Defines a warning threshold. Defaults to none.                                  |
+| `-c`              | `--critical`     | **Optinal.** Defines a critical threshold. Defaults to none.                                  |
+| `-i`              | `--index`        | **Optinal.** Defines a index value required by some check methods. Defaults to none.          |
 
 > **Note:**
 >
@@ -56,16 +56,16 @@ Heimnetz -> Netzwerk -> Netzwerkeinstellungen ->  Heimnetzfreigaben -> Zugriff f
 
 ### Methods
 
-| Name                 | Description                                                  |
-|----------------------|--------------------------------------------------------------|
-| `connection_status`  | WAN connection status.                                       |
-| `connection_uptime`  | WAN connection uptime in seconds.                            |
-| `device_uptime`      | Device uptime in seconds.                                    |
-| `downstream_max`     | Maximum downstream.                                          |
-| `upstream_max`       | Maximum upstream.                                            |
-| `downstream_current` | Current downstream.                                          |
-| `upstream_current`   | Current upstream.                                            |
-| `interface_update`   | Update state.                                                |
-| `smart_thermometer`  | Current temperature of a radiator thermostat.                |
-| `smart_socketpower`  | Current power consumption of a socket switch.                |
-| `smart_socketenergy` | Total power consumption of the last year of a socket switch. |
+| Name                     | Description                                                  |
+|--------------------------|--------------------------------------------------------------|
+| `connection_status`      | WAN connection status.                                       |
+| `connection_uptime`      | WAN connection uptime in seconds.                            |
+| `device_uptime`          | Device uptime in seconds.                                    |
+| `device_update`          | Update state.                                                |
+| `downstream_max`         | Maximum downstream.                                          |
+| `downstream_current`     | Current downstream.                                          |
+| `smart_heatertemperatur` | Current temperature of a radiator thermostat.                |
+| `smart_socketpower`      | Current power consumption of a socket switch.                |
+| `smart_socketenergy`     | Total power consumption of the last year of a socket switch. |
+| `upstream_max`           | Maximum upstream.                                            |
+| `upstream_current`       | Current upstream.                                            |

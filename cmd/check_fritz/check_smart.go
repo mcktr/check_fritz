@@ -10,8 +10,8 @@ import (
 	"github.com/mcktr/check_fritz/pkg/thresholds"
 )
 
-// CheckSmartThermometer checks the temperature of a smart home thermometer device
-func CheckSmartThermometer(aI ArgumentInformation) {
+// CheckSmartHeaterTemperatur checks the temperature of a smart home thermometer device
+func CheckSmartHeaterTemperatur(aI ArgumentInformation) {
 	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
 	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewIndex", strconv.Itoa(*aI.Index)))
 
@@ -73,7 +73,7 @@ func CheckSmartThermometer(aI ArgumentInformation) {
 		fmt.Print("CRITICAL " + output + "\n")
 	default:
 		GlobalReturnCode = exitUnknown
-		fmt.Print("UNKNWON - Not able to calculate thermostat temperature\n")
+		fmt.Print("UNKNWON - Not able to calculate heater temperature\n")
 	}
 }
 
