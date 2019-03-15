@@ -174,10 +174,10 @@ func main() {
 			CheckDownstreamCurrent(aI)
 		case "upstream_current":
 			CheckUpstreamCurrent(aI)
-		case "interface_update":
-			CheckInterfaceUpdate(aI)
-		case "smart_thermometer":
-			CheckSmartThermometer(aI)
+		case "device_update":
+			CheckDeviceUpdate(aI)
+		case "smart_heatertemperatur":
+			CheckSmartHeaterTemperatur(aI)
 		case "smart_socketpower":
 			CheckSmartSocketPower(aI)
 		case "smart_socketenergy":
