@@ -9,7 +9,7 @@ import (
 )
 
 // program version
-var version = "0.1"
+var version = "1.0"
 
 // internal exit codes
 var exitOk = 0
