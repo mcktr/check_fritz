@@ -2,11 +2,6 @@
 
 ![CI status](https://travis-ci.org/mcktr/check_fritz.svg?branch=master)
 
-> **Note:**
->
-> This is an early development version. Things are unstable and possibly don't work correctly.
-> It is also possible that things change in the final version.
-
 **Table of Contents**
 
 1. Introduction
