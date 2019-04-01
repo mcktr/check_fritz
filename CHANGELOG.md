@@ -2,7 +2,7 @@
 
 ## 1.0 (2019-03-22)
 
-* First stable version of check_fritz
+- This is the first stable version of check_fritz
 
 * [#38](https://github.com/mcktr/check_fritz/pull/38) (documentation): Add installation documentation
 * [#37](https://github.com/mcktr/check_fritz/pull/37) (enhancement): Rename check methods to their final names
