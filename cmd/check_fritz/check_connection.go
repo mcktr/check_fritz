@@ -28,7 +28,8 @@ func CheckConnectionStatus(aI ArgumentInformation) {
 	}
 
 	if resp.NewConnectionStatus == "Connected" {
-		fmt.Print("OK - Connection Status: " + resp.NewConnectionStatus + "\n")
+
+		fmt.Print("OK - Connection Status: " + resp.NewConnectionStatus + "; External IP: " + resp.NewExternalIPAddress + "\n")
 
 		GlobalReturnCode = exitOk
 	} else {
