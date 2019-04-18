@@ -182,6 +182,8 @@ func main() {
 			CheckSmartSocketPower(aI)
 		case "smart_socketenergy":
 			CheckSmartSocketEnergy(aI)
+		case "smart_status":
+			CheckSmartStatus(aI)
 		default:
 			fmt.Println("Unknown method.")
 			GlobalReturnCode = exitUnknown
