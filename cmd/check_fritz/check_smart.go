@@ -10,6 +10,45 @@ import (
 	"github.com/mcktr/check_fritz/pkg/thresholds"
 )
 
+// CheckSmartStatus checks the connection status of a smart device
+func CheckSmartStatus(aI ArgumentInformation) {
+	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
+	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewIndex", strconv.Itoa(*aI.Index)))
+
+	err := fritz.DoSoapRequest(&soapReq)
+
+	if HandleError(err) {
+		return
+	}
+
+	var resp = fritz.GetSmartDeviceInfoResponse{}
+
+	err = fritz.HandleSoapRequest(&soapReq, &resp)
+
+	if HandleError(err) {
+		return
+	}
+
+	output := "- " + resp.NewProductName + " " + resp.NewFirmwareVersion + " - " + resp.NewDeviceName + " " + resp.NewPresent
+	GlobalReturnCode = exitOk
+
+	if resp.NewPresent != "CONNECTED" {
+		GlobalReturnCode = exitCritical
+	}
+
+	switch GlobalReturnCode {
+	case exitOk:
+		fmt.Print("OK " + output + "\n")
+	case exitWarning:
+		fmt.Print("WARNING " + output + "\n")
+	case exitCritical:
+		fmt.Print("CRITICAL " + output + "\n")
+	default:
+		GlobalReturnCode = exitUnknown
+		fmt.Print("UNKNWON - Not able to determine smart device status\n")
+	}
+}
+
 // CheckSmartHeaterTemperatur checks the temperature of a smart home thermometer device
 func CheckSmartHeaterTemperatur(aI ArgumentInformation) {
 	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
@@ -62,7 +101,7 @@ func CheckSmartHeaterTemperatur(aI ArgumentInformation) {
 		}
 	}
 
-	output := "- " + resp.NewProductName + " " + resp.NewFirmwareVersion + " - " + resp.NewDeviceName + " " + resp.NewPresent + " " + fmt.Sprintf("%.2f", currentTemp) + " °C " + perfData.GetPerformanceDataAsString()
+	output := "- " + resp.NewProductName + " " + resp.NewFirmwareVersion + " - " + resp.NewDeviceName + " " + fmt.Sprintf("%.2f", currentTemp) + " °C " + perfData.GetPerformanceDataAsString()
 
 	switch GlobalReturnCode {
 	case exitOk:
@@ -123,7 +162,7 @@ func CheckSmartSocketPower(aI ArgumentInformation) {
 		}
 	}
 
-	output := "- " + resp.NewProductName + " " + resp.NewFirmwareVersion + " - " + resp.NewDeviceName + " " + resp.NewPresent + " " + fmt.Sprintf("%.2f", currentPower) + " W " + perfData.GetPerformanceDataAsString()
+	output := "- " + resp.NewProductName + " " + resp.NewFirmwareVersion + " - " + resp.NewDeviceName + " " + fmt.Sprintf("%.2f", currentPower) + " W " + perfData.GetPerformanceDataAsString()
 
 	switch GlobalReturnCode {
 	case exitOk:
@@ -184,7 +223,7 @@ func CheckSmartSocketEnergy(aI ArgumentInformation) {
 		}
 	}
 
-	output := "- " + resp.NewProductName + " " + resp.NewFirmwareVersion + " - " + resp.NewDeviceName + " " + resp.NewPresent + " " + fmt.Sprintf("%.2f", currentEnergy) + " kWh " + perfData.GetPerformanceDataAsString()
+	output := "- " + resp.NewProductName + " " + resp.NewFirmwareVersion + " - " + resp.NewDeviceName + " " + fmt.Sprintf("%.2f", currentEnergy) + " kWh " + perfData.GetPerformanceDataAsString()
 
 	switch GlobalReturnCode {
 	case exitOk:
