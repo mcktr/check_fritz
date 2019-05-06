@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/mcktr/check_fritz/pkg/fritz"
-	"github.com/mcktr/check_fritz/pkg/perfdata"
+	"github.com/mcktr/check_fritz/modules/fritz"
+	"github.com/mcktr/check_fritz/modules/perfdata"
 )
 
 // CheckDeviceUptime checks the uptime of the device
