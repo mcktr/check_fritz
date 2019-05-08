@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/mcktr/check_fritz/pkg/perfdata"
+	"github.com/mcktr/check_fritz/modules/perfdata"
 
-	"github.com/mcktr/check_fritz/pkg/fritz"
-	"github.com/mcktr/check_fritz/pkg/thresholds"
+	"github.com/mcktr/check_fritz/modules/fritz"
+	"github.com/mcktr/check_fritz/modules/thresholds"
 )
 
 // CheckSmartStatus checks the connection status of a smart device

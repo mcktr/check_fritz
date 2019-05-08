@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/mcktr/check_fritz/pkg/perfdata"
+	"github.com/mcktr/check_fritz/modules/perfdata"
 
-	"github.com/mcktr/check_fritz/pkg/fritz"
+	"github.com/mcktr/check_fritz/modules/fritz"
 )
 
 // CheckConnectionStatus checks the internet connection status

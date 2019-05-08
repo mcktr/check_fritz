@@ -5,10 +5,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/mcktr/check_fritz/pkg/perfdata"
+	"github.com/mcktr/check_fritz/modules/perfdata"
 
-	"github.com/mcktr/check_fritz/pkg/fritz"
-	"github.com/mcktr/check_fritz/pkg/thresholds"
+	"github.com/mcktr/check_fritz/modules/fritz"
+	"github.com/mcktr/check_fritz/modules/thresholds"
 )
 
 // CheckDownstreamMax checks the maximum downstream that is available on this internet connection
