@@ -3,133 +3,136 @@ package fritz
 import (
 	"bytes"
 	"crypto/tls"
-	"encoding/xml"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
 
 // DoSoapRequest does two request to authenticate and handle the SOAP request
-func DoSoapRequest(fSR *SoapRequest) error {
-	internalCreateNewSoapClient(fSR)
-	internalPrepareHTTPClient(fSR)
-	internalNewSoapRequestBody(fSR)
+func DoSoapRequest(soapRequest *SoapData, resps chan<- []byte, errs chan<- error) {
+	soapClient := createNewSoapClient()
 
-	req, err := http.NewRequest("POST", fSR.URL, bytes.NewBuffer([]byte(fSR.soapRequestBody)))
-
-	if err != nil {
-		return err
-	}
-
-	fSR.soapRequest = *req
-
-	internalPrepareRequestHeader(fSR, fSR.Action, fSR.Service)
-
-	// first request is always unauthenticated due to how digest authenticatioin works
-
-	resp, err := fSR.soapClient.Do(&fSR.soapRequest)
+	// prepare first request
+	req, err := newSoapRequest(soapRequest)
 
 	if err != nil {
-		return err
+		errs <- err
+		return
 	}
 
-	fSR.soapResponse = *resp
+	// the first request is always unauthenticated due to how digest authentication works
+	resp, err := soapClient.Do(req)
+
+	if err != nil {
+		errs <- err
+		return
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		errs <- err
+		return
+	}
+
+	// fmt.Println(string(debugBody))
 
 	resp.Body.Close()
 
-	// create immediately a new request (execution later)
-
-	req, err = http.NewRequest("POST", fSR.URL, bytes.NewBuffer([]byte(fSR.soapRequestBody)))
-
-	if err != nil {
-		return err
-	}
-
-	fSR.soapRequest = *req
-
-	internalPrepareRequestHeader(fSR, fSR.Action, fSR.Service)
-
-	if fSR.soapResponse.StatusCode == http.StatusUnauthorized {
-		DoDigestAuthentication(fSR)
-	}
+	// create immediately a new request with authentication
+	req, err = newSoapRequest(soapRequest)
 
 	if err != nil {
-		return err
+		errs <- err
+		return
 	}
 
-	// second request is authenticated
+	if resp.StatusCode == http.StatusUnauthorized {
+		authHeader, err := doDigestAuthentication(resp, soapRequest)
 
-	resp, err = fSR.soapClient.Do(&fSR.soapRequest)
+		if err != nil {
+			errs <- err
+			return
+		} else if authHeader == "" {
+			errs <- errors.New("Returned authentication header is empty")
+			return
+		}
+		req.Header.Set("Authorization", authHeader)
+
+	} else if resp.StatusCode == http.StatusOK {
+		resps <- body
+		return
+	} else {
+		errs <- fmt.Errorf("Unexpected response status code: %d", resp.StatusCode)
+	}
+
+	// second request is now authenticated
+	resp, err = soapClient.Do(req)
 
 	if err != nil {
-		return err
+		errs <- err
+		return
 	}
 
-	fSR.soapResponse = *resp
-
-	if fSR.soapResponse.StatusCode == http.StatusUnauthorized {
-		error := errors.New("Unauthorized: wrong username or password")
-		return error
+	if resp.StatusCode == http.StatusUnauthorized {
+		errs <- errors.New("Unauthorized: wrong username or password")
+		return
+	} else if resp.StatusCode != http.StatusOK {
+		errs <- fmt.Errorf("Unexpected response status code: %d", resp.StatusCode)
+		return
 	}
 
-	return nil
+	body, err = ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		errs <- err
+		return
+	}
+	resp.Body.Close()
+
+	resps <- body
 }
 
-// HandleSoapRequest handles the SOAP response
-func HandleSoapRequest(fSR *SoapRequest, response Response) error {
-	body, err := ioutil.ReadAll(fSR.soapResponse.Body)
-
-	if err != nil {
-		panic(err)
+func createNewSoapClient() *http.Client {
+	ht := &http.Transport{
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: true},
 	}
 
-	err = xml.Unmarshal(body, &response)
-
-	if err != nil {
-		return err
-	}
-
-	// Enable for development to output response body
-	// fmt.Println(string(body))
-
-	return nil
+	return &http.Client{Transport: ht}
 }
 
-func internalCreateNewSoapClient(fSR *SoapRequest) {
+func newSoapRequest(soapRequest *SoapData) (*http.Request, error) {
+	requestBody := newSoapRequestBody(soapRequest)
+	req, err := http.NewRequest("POST", soapRequest.URL, bytes.NewBuffer(requestBody))
 
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	if err != nil {
+		return nil, err
 	}
+	req.Header.Set("Content-Type", "text/xml; charset='utf-8'")
+	req.Header.Set("SoapAction", "urn:dslforum-org:service:"+soapRequest.Service+":1#"+soapRequest.Action)
 
-	fSR.soapClient = http.Client{Transport: tr}
+	return req, nil
 }
 
-func internalNewSoapRequestBody(SoapRequest *SoapRequest) {
+func newSoapRequestBody(soapRequest *SoapData) []byte {
 	var request bytes.Buffer
 
-	request.WriteString("<?xml version='1.0'?>\n")
-	request.WriteString("<s:Envelope xmlns:s='http://schemas.xmlsoap.org/soap/envelope/' s:encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'>\n")
-	request.WriteString("<s:Body>\n")
-	request.WriteString("<u:" + SoapRequest.Action + " xmlns:u='urn:dslforum-org:service:" + SoapRequest.Service + ":1'>\n")
+	request.WriteString("<?xml version='1.0?>")
+	request.WriteString("<s:Envelope xmlns:s='http://schemas.xmlsoap.org/soap/envelope/' s:encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'>")
+	request.WriteString("<s:Body>")
+	request.WriteString("<u:" + soapRequest.Action + " xmlns:u='urn:dslforum-org:service:" + soapRequest.Service + ":1'>")
 
-	if (SoapRequest.XMLVariable != SoapRequestVariable{}) {
-		request.WriteString("<" + SoapRequest.XMLVariable.Name + ">\n")
-		request.WriteString(SoapRequest.XMLVariable.Value)
-		request.WriteString("</" + SoapRequest.XMLVariable.Name + ">\n")
+	if &soapRequest.XMLVariable != nil {
+		request.WriteString("<" + soapRequest.XMLVariable.Name + ">")
+		request.WriteString(soapRequest.XMLVariable.Value)
+		request.WriteString("</" + soapRequest.XMLVariable.Name + ">")
 	}
 
-	request.WriteString("</u:" + SoapRequest.Action + ">\n")
-	request.WriteString("</s:Body>\n")
+	request.WriteString("</u:" + soapRequest.Action + ">")
+	request.WriteString("</s:Body>")
 	request.WriteString("</s:Envelope>")
 
-	SoapRequest.soapRequestBody = request.String()
-}
-
-func internalPrepareHTTPClient(fSR *SoapRequest) {
-	// TODO: Remove ?
-}
-
-func internalPrepareRequestHeader(fSR *SoapRequest, action string, service string) {
-	fSR.soapRequest.Header.Set("Content-Type", "text/xml; charset='utf-8'")
-	fSR.soapRequest.Header.Set("SoapAction", "urn:dslforum-org:service:"+service+":1#"+action)
+	return request.Bytes()
 }

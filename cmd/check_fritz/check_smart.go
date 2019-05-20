@@ -4,35 +4,37 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/mcktr/check_fritz/modules/perfdata"
-
 	"github.com/mcktr/check_fritz/modules/fritz"
+	"github.com/mcktr/check_fritz/modules/perfdata"
 	"github.com/mcktr/check_fritz/modules/thresholds"
 )
 
 // CheckSmartStatus checks the connection status of a smart device
 func CheckSmartStatus(aI ArgumentInformation) {
-	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
-	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewIndex", strconv.Itoa(*aI.Index)))
+	resps := make(chan []byte)
+	errs := make(chan error)
 
-	err := fritz.DoSoapRequest(&soapReq)
+	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
+	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewIndex", strconv.Itoa(*aI.Index)))
+	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	if HandleError(err) {
-		return
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+
+	if err != nil {
+		panic(err)
 	}
 
-	var resp = fritz.GetSmartDeviceInfoResponse{}
+	soapResp := fritz.SmartDeviceInfoResponse{}
+	err = fritz.UnmarshalSoapResponse(&soapResp, res)
 
-	err = fritz.HandleSoapRequest(&soapReq, &resp)
-
-	if HandleError(err) {
-		return
+	if err != nil {
+		panic(err)
 	}
 
-	output := "- " + resp.NewProductName + " " + resp.NewFirmwareVersion + " - " + resp.NewDeviceName + " " + resp.NewPresent
+	output := "- " + soapResp.NewProductName + " " + soapResp.NewFirmwareVersion + " - " + soapResp.NewDeviceName + " " + soapResp.NewPresent
 	GlobalReturnCode = exitOk
 
-	if resp.NewPresent != "CONNECTED" {
+	if soapResp.NewPresent != "CONNECTED" {
 		GlobalReturnCode = exitCritical
 	}
 
@@ -51,33 +53,36 @@ func CheckSmartStatus(aI ArgumentInformation) {
 
 // CheckSmartHeaterTemperatur checks the temperature of a smart home thermometer device
 func CheckSmartHeaterTemperatur(aI ArgumentInformation) {
-	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
-	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewIndex", strconv.Itoa(*aI.Index)))
+	resps := make(chan []byte)
+	errs := make(chan error)
 
-	err := fritz.DoSoapRequest(&soapReq)
+	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
+	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewIndex", strconv.Itoa(*aI.Index)))
+	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	if HandleError(err) {
-		return
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+
+	if err != nil {
+		panic(err)
 	}
 
-	var resp = fritz.GetSmartDeviceInfoResponse{}
+	soapResp := fritz.SmartDeviceInfoResponse{}
+	err = fritz.UnmarshalSoapResponse(&soapResp, res)
 
-	err = fritz.HandleSoapRequest(&soapReq, &resp)
-
-	if HandleError(err) {
-		return
+	if err != nil {
+		panic(err)
 	}
 
-	if resp.NewTemperatureIsEnabled != "ENABLED" {
+	if soapResp.NewTemperatureIsEnabled != "ENABLED" {
 		fmt.Print("UNKNOWN - Temperature is not enabled on this smart device\n")
 		GlobalReturnCode = exitUnknown
 		return
 	}
 
-	currentTemp, err := strconv.ParseFloat(resp.NewTemperatureCelsius, 64)
+	currentTemp, err := strconv.ParseFloat(soapResp.NewTemperatureCelsius, 64)
 
-	if HandleError(err) {
-		return
+	if err != nil {
+		panic(err)
 	}
 
 	currentTemp = currentTemp / 10.0
@@ -101,7 +106,7 @@ func CheckSmartHeaterTemperatur(aI ArgumentInformation) {
 		}
 	}
 
-	output := "- " + resp.NewProductName + " " + resp.NewFirmwareVersion + " - " + resp.NewDeviceName + " " + fmt.Sprintf("%.2f", currentTemp) + " °C " + perfData.GetPerformanceDataAsString()
+	output := "- " + soapResp.NewProductName + " " + soapResp.NewFirmwareVersion + " - " + soapResp.NewDeviceName + " " + fmt.Sprintf("%.2f", currentTemp) + " °C " + perfData.GetPerformanceDataAsString()
 
 	switch GlobalReturnCode {
 	case exitOk:
@@ -118,27 +123,30 @@ func CheckSmartHeaterTemperatur(aI ArgumentInformation) {
 
 // CheckSmartSocketPower checks the current watt usage on the smart socket
 func CheckSmartSocketPower(aI ArgumentInformation) {
-	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
-	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewIndex", strconv.Itoa(*aI.Index)))
+	resps := make(chan []byte)
+	errs := make(chan error)
 
-	err := fritz.DoSoapRequest(&soapReq)
+	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
+	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewIndex", strconv.Itoa(*aI.Index)))
+	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	if HandleError(err) {
-		return
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+
+	if err != nil {
+		panic(err)
 	}
 
-	var resp = fritz.GetSmartDeviceInfoResponse{}
+	soapResp := fritz.SmartDeviceInfoResponse{}
+	err = fritz.UnmarshalSoapResponse(&soapResp, res)
 
-	err = fritz.HandleSoapRequest(&soapReq, &resp)
-
-	if HandleError(err) {
-		return
+	if err != nil {
+		panic(err)
 	}
 
-	currentPower, err := strconv.ParseFloat(resp.NewMultimeterPower, 64)
+	currentPower, err := strconv.ParseFloat(soapResp.NewMultimeterPower, 64)
 
-	if HandleError(err) {
-		return
+	if err != nil {
+		panic(err)
 	}
 
 	currentPower = currentPower / 100.0
@@ -162,7 +170,7 @@ func CheckSmartSocketPower(aI ArgumentInformation) {
 		}
 	}
 
-	output := "- " + resp.NewProductName + " " + resp.NewFirmwareVersion + " - " + resp.NewDeviceName + " " + fmt.Sprintf("%.2f", currentPower) + " W " + perfData.GetPerformanceDataAsString()
+	output := "- " + soapResp.NewProductName + " " + soapResp.NewFirmwareVersion + " - " + soapResp.NewDeviceName + " " + fmt.Sprintf("%.2f", currentPower) + " W " + perfData.GetPerformanceDataAsString()
 
 	switch GlobalReturnCode {
 	case exitOk:
@@ -179,27 +187,30 @@ func CheckSmartSocketPower(aI ArgumentInformation) {
 
 // CheckSmartSocketEnergy checks total power consumption of the last year on the smart socket
 func CheckSmartSocketEnergy(aI ArgumentInformation) {
-	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
-	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewIndex", strconv.Itoa(*aI.Index)))
+	resps := make(chan []byte)
+	errs := make(chan error)
 
-	err := fritz.DoSoapRequest(&soapReq)
+	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
+	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewIndex", strconv.Itoa(*aI.Index)))
+	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	if HandleError(err) {
-		return
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+
+	if err != nil {
+		panic(err)
 	}
 
-	var resp = fritz.GetSmartDeviceInfoResponse{}
+	soapResp := fritz.SmartDeviceInfoResponse{}
+	err = fritz.UnmarshalSoapResponse(&soapResp, res)
 
-	err = fritz.HandleSoapRequest(&soapReq, &resp)
-
-	if HandleError(err) {
-		return
+	if err != nil {
+		panic(err)
 	}
 
-	currentEnergy, err := strconv.ParseFloat(resp.NewMultimeterEnergy, 64)
+	currentEnergy, err := strconv.ParseFloat(soapResp.NewMultimeterEnergy, 64)
 
-	if HandleError(err) {
-		return
+	if err != nil {
+		panic(err)
 	}
 
 	currentEnergy = currentEnergy / 1000.0
@@ -223,7 +234,7 @@ func CheckSmartSocketEnergy(aI ArgumentInformation) {
 		}
 	}
 
-	output := "- " + resp.NewProductName + " " + resp.NewFirmwareVersion + " - " + resp.NewDeviceName + " " + fmt.Sprintf("%.2f", currentEnergy) + " kWh " + perfData.GetPerformanceDataAsString()
+	output := "- " + soapResp.NewProductName + " " + soapResp.NewFirmwareVersion + " - " + soapResp.NewDeviceName + " " + fmt.Sprintf("%.2f", currentEnergy) + " kWh " + perfData.GetPerformanceDataAsString()
 
 	switch GlobalReturnCode {
 	case exitOk:

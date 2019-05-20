@@ -10,26 +10,29 @@ import (
 
 // CheckDeviceUptime checks the uptime of the device
 func CheckDeviceUptime(aI ArgumentInformation) {
-	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/deviceinfo", "DeviceInfo", "GetInfo")
+	resps := make(chan []byte)
+	errs := make(chan error)
 
-	err := fritz.DoSoapRequest(&soapReq)
+	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/deviceinfo", "DeviceInfo", "GetInfo")
+	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	if HandleError(err) {
-		return
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+
+	if err != nil {
+		panic(err)
 	}
 
-	var resp = fritz.GetDeviceInfoResponse{}
+	soapResp := fritz.DeviceInfoResponse{}
+	err = fritz.UnmarshalSoapResponse(&soapResp, res)
 
-	err = fritz.HandleSoapRequest(&soapReq, &resp)
-
-	if HandleError(err) {
-		return
+	if err != nil {
+		panic(err)
 	}
 
-	uptime, err := strconv.Atoi(resp.NewUpTime)
+	uptime, err := strconv.Atoi(soapResp.NewUpTime)
 
-	if HandleError(err) {
-		return
+	if err != nil {
+		panic(err)
 	}
 
 	days := uptime / 86400
@@ -47,34 +50,35 @@ func CheckDeviceUptime(aI ArgumentInformation) {
 
 // CheckDeviceUpdate checks if a new firmware is available
 func CheckDeviceUpdate(aI ArgumentInformation) {
-	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/userif", "UserInterface", "GetInfo")
+	resps := make(chan []byte)
+	errs := make(chan error)
 
-	err := fritz.DoSoapRequest(&soapReq)
+	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/userif", "UserInterface", "GetInfo")
+	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	if HandleError(err) {
-		return
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+
+	if err != nil {
+		panic(err)
 	}
 
-	var resp = fritz.GetInterfaceInfoResponse{}
+	soapResp := fritz.UserInterfaceInfoResponse{}
+	err = fritz.UnmarshalSoapResponse(&soapResp, res)
 
-	err = fritz.HandleSoapRequest(&soapReq, &resp)
-
-	if HandleError(err) {
-		return
+	if err != nil {
+		panic(err)
 	}
 
-	state, err := strconv.Atoi(resp.NewUpgradeAvailable)
+	state, err := strconv.Atoi(soapResp.NewUpgradeAvailable)
 
-	if HandleError(err) {
-		return
+	if err != nil {
+		panic(err)
 	}
 
 	GlobalReturnCode = exitOk
 
 	if state == 0 {
-		GlobalReturnCode = exitOk
-
-		fmt.Print("OK - No update avaiable\n")
+		fmt.Print("OK - No update available\n")
 	} else {
 		GlobalReturnCode = exitCritical
 

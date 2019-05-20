@@ -4,63 +4,63 @@ import (
 	"crypto/md5"
 	"crypto/rand"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"io"
+	"net/http"
 	"strings"
 )
 
 // DoDigestAuthentication does a digist authentication request
-func DoDigestAuthentication(fSR *SoapRequest) {
+func doDigestAuthentication(soapResponse *http.Response, soapRequest *SoapData) (string, error) {
+	authHeader := soapResponse.Header.Get("WWW-Authenticate")
 
-	headerDigsetAuth := fSR.soapResponse.Header.Get("WWW-Authenticate")
-
-	if headerDigsetAuth != "" {
-
-		digestHeader := internalCreateDigestAuthenticationHeader(headerDigsetAuth)
-
-		digestHeader["username"] = fSR.Username
-		digestHeader["password"] = fSR.Password
-		digestHeader["uri"] = fSR.URLPath
-		digestHeader["method"] = "POST"
-
-		header1 := internalGetMD5(digestHeader["username"] + ":" + digestHeader["realm"] + ":" + digestHeader["password"])
-		header2 := internalGetMD5(digestHeader["method"] + ":" + digestHeader["uri"])
-		nonceCount := "00000001"
-		cnonce := internalGetCnonce()
-		response := internalGetMD5(fmt.Sprintf("%s:%s:%v:%s:%s:%s", header1, digestHeader["nonce"], nonceCount, cnonce, digestHeader["qop"], header2))
-
-		fSR.soapRequest.Header.Set("Authorization", fmt.Sprintf(`Digest username="%s", realm="%s", nonce="%s", uri="%s", cnonce="%s", nc="%s", qop="%s", response="%s", algorithm="MD5"`, digestHeader["username"], digestHeader["realm"], digestHeader["nonce"], digestHeader["uri"], cnonce, nonceCount, digestHeader["qop"], response))
+	if authHeader == "" {
+		return "", errors.New("HTTP Header WWW-Authenticate is empty, cant do a Digist Authentication")
 	}
+
+	digestHeader := createDigistAuthenticationHeader(authHeader)
+	digestHeader["username"] = string(soapRequest.Username)
+	digestHeader["uri"] = soapRequest.URLPath
+	digestHeader["method"] = "POST"
+
+	header1 := getMD5(digestHeader["username"] + ":" + digestHeader["realm"] + ":" + string(soapRequest.Password))
+	header2 := getMD5(digestHeader["method"] + ":" + digestHeader["uri"])
+	nonceCount := "00000001"
+	cnonce := getCnonce()
+	response := getMD5(fmt.Sprintf("%s:%s:%v:%s:%s:%s", header1, digestHeader["nonce"], nonceCount, cnonce, digestHeader["qop"], header2))
+
+	r := fmt.Sprintf(`Digest username="%s", realm="%s", nonce="%s", uri="%s", cnonce="%s", nc="%s", qop="%s", response="%s", algorithm="MD5"`, digestHeader["username"], digestHeader["realm"], digestHeader["nonce"], digestHeader["uri"], cnonce, nonceCount, digestHeader["qop"], response)
+
+	return r, nil
 }
 
-func internalCreateDigestAuthenticationHeader(digsetHeader string) map[string]string {
-	result := map[string]string{}
+func createDigistAuthenticationHeader(header string) map[string]string {
+	digestHeader := map[string]string{}
 
 	wanted := []string{"nonce", "realm", "qop"}
-	response := strings.Split(digsetHeader, ",")
+	response := strings.Split(header, ",")
 
 	for _, r := range response {
 		for _, w := range wanted {
 			if strings.Contains(r, w) {
-				result[w] = strings.Split(r, `"`)[1]
+				digestHeader[w] = strings.Split(r, `"`)[1]
 			}
 		}
 	}
 
-	return result
+	return digestHeader
 }
 
-func internalGetMD5(str string) string {
+func getMD5(str string) string {
 	hash := md5.New()
-
 	hash.Write([]byte(str))
 
 	return hex.EncodeToString(hash.Sum(nil))
 }
 
-func internalGetCnonce() string {
+func getCnonce() string {
 	b := make([]byte, 32)
-
 	io.ReadFull(rand.Reader, b)
 
 	return fmt.Sprintf("%x", b)[:64]

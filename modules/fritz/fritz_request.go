@@ -1,56 +1,48 @@
 package fritz
 
-import "net/http"
-
-// SoapRequest is the data structure for a SOAP request including the response
-type SoapRequest struct {
-	Username         string
-	Password         string
-	URL              string
-	URLPath          string
-	Action           string
-	Service          string
-	XMLVariable      SoapRequestVariable
-	soapClient       http.Client
-	soapRequest      http.Request
-	soapRequestBody  string
-	soapResponse     http.Response
-	soapResponseBody string
-	soapDigestAuth   map[string]string
+// SoapData is the data structure for a SOAP request including the response
+type SoapData struct {
+	Username    []byte
+	Password    []byte
+	URL         string
+	URLPath     string
+	Action      string
+	Service     string
+	XMLVariable SoapDataVariable
 }
 
-// SoapRequestVariable is the data structure for a variable that can injected in the SOAP request
-type SoapRequestVariable struct {
+// SoapDataVariable is the data structure for a variable that can injected in the SOAP request
+type SoapDataVariable struct {
 	Name  string
 	Value string
 }
 
-// NewSoapRequest creates a new FritzSoapRequest structure
-func NewSoapRequest(username string, password string, hostname string, port string, urlpath string, service string, action string) SoapRequest {
-	var fSR SoapRequest
+// AddSoapDataVariable adds a SoapRequestVariable to a SoapRequest
+func (soapData *SoapData) AddSoapDataVariable(soapDataVariable SoapDataVariable) {
+	soapData.XMLVariable = soapDataVariable
+}
+
+// CreateNewSoapData creates a new FritzSoapRequest structure
+func CreateNewSoapData(username string, password string, hostname string, port string, urlpath string, service string, action string) SoapData {
+	var fSR SoapData
 
 	fSR.URL = "https://" + hostname + ":" + port + urlpath
 
 	fSR.URLPath = urlpath
-	fSR.Username = username
-	fSR.Password = password
+	fSR.Username = []byte(username)
+	fSR.Password = []byte(password)
 	fSR.Action = action
 	fSR.Service = service
 
 	return fSR
 }
 
-// NewSoapRequestVariable creates a new SoapRequestVariable
-func NewSoapRequestVariable(name string, value string) *SoapRequestVariable {
-	var sRV SoapRequestVariable
+// CreateNewSoapVariable creates a new SoapRequestVariable
+func CreateNewSoapVariable(name string, value string) SoapDataVariable {
+	var soapDataVariable SoapDataVariable
 
-	sRV.Name = name
-	sRV.Value = value
+	soapDataVariable.Name = name
+	soapDataVariable.Value = value
 
-	return &sRV
-}
-
-// AddSoapRequestVariable adds a SoapRequestVariable to a SoapRequest
-func AddSoapRequestVariable(soapRequest *SoapRequest, soapRequestVariable *SoapRequestVariable) {
-	soapRequest.XMLVariable = *soapRequestVariable
+	return soapDataVariable
 }
