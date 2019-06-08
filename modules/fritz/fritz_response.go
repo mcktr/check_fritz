@@ -95,36 +95,36 @@ type WANCommonInterfaceOnlineMonitorResponse struct {
 // SmartDeviceInfoResponse is the data structure for responses from X_AVM-DE_Homeauto
 type SmartDeviceInfoResponse struct {
 	TR064Response
-	NewAIN                    string `xml:"Body>GetGenericDeviceInfosResponse>NewAIN"`
-	NewDeviceID               string `xml:"Body>GetGenericDeviceInfosResponse>NewDeviceId"`
-	NewFunctionBitMask        string `xml:"Body>GetGenericDeviceInfosResponse>NewFunctionBitMask"`
-	NewFirmwareVersion        string `xml:"Body>GetGenericDeviceInfosResponse>NewFirmwareVersion"`
-	NewManufacturer           string `xml:"Body>GetGenericDeviceInfosResponse>NewManufacturer"`
-	NewProductName            string `xml:"Body>GetGenericDeviceInfosResponse>NewProductName"`
-	NewDeviceName             string `xml:"Body>GetGenericDeviceInfosResponse>NewDeviceName"`
-	NewPresent                string `xml:"Body>GetGenericDeviceInfosResponse>NewPresent"`
-	NewMultimeterIsEnabled    string `xml:"Body>GetGenericDeviceInfosResponse>NewMultimeterIsEnabled"`
-	NewMultimeterIsValid      string `xml:"Body>GetGenericDeviceInfosResponse>NewMultimeterIsValid"`
-	NewMultimeterPower        string `xml:"Body>GetGenericDeviceInfosResponse>NewMultimeterPower"`
-	NewMultimeterEnergy       string `xml:"Body>GetGenericDeviceInfosResponse>NewMultimeterEnergy"`
-	NewTemperatureIsEnabled   string `xml:"Body>GetGenericDeviceInfosResponse>NewTemperatureIsEnabled"`
-	NewTemperatureIsValid     string `xml:"Body>GetGenericDeviceInfosResponse>NewTemperatureIsValid"`
-	NewTemperatureCelsius     string `xml:"Body>GetGenericDeviceInfosResponse>NewTemperatureCelsius"`
-	NewTemperatureOffset      string `xml:"Body>GetGenericDeviceInfosResponse>NewTemperatureOffset"`
-	NewSwitchIsEnabled        string `xml:"Body>GetGenericDeviceInfosResponse>NewSwitchIsEnabled"`
-	NewSwitchIsValid          string `xml:"Body>GetGenericDeviceInfosResponse>NewSwitchIsValid"`
-	NewSwitchState            string `xml:"Body>GetGenericDeviceInfosResponse>NewSwitchState"`
-	NewSwitchMode             string `xml:"Body>GetGenericDeviceInfosResponse>NewSwitchMode"`
-	NewSwitchLock             string `xml:"Body>GetGenericDeviceInfosResponse>NewSwitchLock"`
-	NewHkrIsEnabled           string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrIsEnabled"`
-	NewHkrIsValid             string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrIsValid"`
-	NewHkrIsTemperature       string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrIsTemperature"`
-	NewHkrSetVentilStatus     string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrSetVentilStatus"`
-	NewHkrSetTemperature      string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrSetTemperature"`
-	NewHkrReduceVentilStatus  string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrReduceVentilStatus"`
-	NewHkrReduceTemperature   string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrReduceTemperature"`
-	NewHkrComfortVentilStatus string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrComfortVentilStatus"`
-	NewHkrComfortTemperature  string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrComfortTemperature"`
+	NewAIN                    string `xml:"Body>GetSpecificDeviceInfosResponseResponse>NewAIN"`
+	NewDeviceID               string `xml:"Body>GetSpecificDeviceInfosResponseResponse>NewDeviceId"`
+	NewFunctionBitMask        string `xml:"Body>GetSpecificDeviceInfosResponseResponse>NewFunctionBitMask"`
+	NewFirmwareVersion        string `xml:"Body>GetSpecificDeviceInfosResponseResponse>NewFirmwareVersion"`
+	NewManufacturer           string `xml:"Body>GetSpecificDeviceInfosResponse>NewManufacturer"`
+	NewProductName            string `xml:"Body>GetSpecificDeviceInfosResponse>NewProductName"`
+	NewDeviceName             string `xml:"Body>GetSpecificDeviceInfosResponse>NewDeviceName"`
+	NewPresent                string `xml:"Body>GetSpecificDeviceInfosResponse>NewPresent"`
+	NewMultimeterIsEnabled    string `xml:"Body>GetSpecificDeviceInfosResponse>NewMultimeterIsEnabled"`
+	NewMultimeterIsValid      string `xml:"Body>GetSpecificDeviceInfosResponse>NewMultimeterIsValid"`
+	NewMultimeterPower        string `xml:"Body>GetSpecificDeviceInfosResponse>NewMultimeterPower"`
+	NewMultimeterEnergy       string `xml:"Body>GetSpecificDeviceInfosResponse>NewMultimeterEnergy"`
+	NewTemperatureIsEnabled   string `xml:"Body>GetSpecificDeviceInfosResponse>NewTemperatureIsEnabled"`
+	NewTemperatureIsValid     string `xml:"Body>GetSpecificDeviceInfosResponse>NewTemperatureIsValid"`
+	NewTemperatureCelsius     string `xml:"Body>GetSpecificDeviceInfosResponse>NewTemperatureCelsius"`
+	NewTemperatureOffset      string `xml:"Body>GetSpecificDeviceInfosResponse>NewTemperatureOffset"`
+	NewSwitchIsEnabled        string `xml:"Body>GetSpecificDeviceInfosResponse>NewSwitchIsEnabled"`
+	NewSwitchIsValid          string `xml:"Body>GetSpecificDeviceInfosResponse>NewSwitchIsValid"`
+	NewSwitchState            string `xml:"Body>GetSpecificDeviceInfosResponse>NewSwitchState"`
+	NewSwitchMode             string `xml:"Body>GetSpecificDeviceInfosResponse>NewSwitchMode"`
+	NewSwitchLock             string `xml:"Body>GetSpecificDeviceInfosResponse>NewSwitchLock"`
+	NewHkrIsEnabled           string `xml:"Body>GetSpecificDeviceInfosResponse>NewHkrIsEnabled"`
+	NewHkrIsValid             string `xml:"Body>GetSpecificDeviceInfosResponse>NewHkrIsValid"`
+	NewHkrIsTemperature       string `xml:"Body>GetSpecificDeviceInfosResponse>NewHkrIsTemperature"`
+	NewHkrSetVentilStatus     string `xml:"Body>GetSpecificDeviceInfosResponse>NewHkrSetVentilStatus"`
+	NewHkrSetTemperature      string `xml:"Body>GetSpecificDeviceInfosResponse>NewHkrSetTemperature"`
+	NewHkrReduceVentilStatus  string `xml:"Body>GetSpecificDeviceInfosResponse>NewHkrReduceVentilStatus"`
+	NewHkrReduceTemperature   string `xml:"Body>GetSpecificDeviceInfosResponse>NewHkrReduceTemperature"`
+	NewHkrComfortVentilStatus string `xml:"Body>GetSpecificDeviceInfosResponse>NewHkrComfortVentilStatus"`
+	NewHkrComfortTemperature  string `xml:"Body>GetSpecificDeviceInfosResponse>NewHkrComfortTemperature"`
 }
 
 // UnmarshalSoapResponse unmarshals the soap response to the data structure

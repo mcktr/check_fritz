@@ -29,7 +29,7 @@ type ArgumentInformation struct {
 	Method   *string
 	Warning  *float64
 	Critical *float64
-	Index    *int
+	Index    *string
 }
 
 func createRequiredArgumentInformation(hostname string, port string, username string, password string, method string) ArgumentInformation {
@@ -66,13 +66,7 @@ func (ai *ArgumentInformation) createCriticalThreshold(critical string) {
 }
 
 func (ai *ArgumentInformation) createIndex(index string) {
-	ind, err := strconv.Atoi(index)
-
-	if HandleError(err) {
-		return
-	}
-
-	ai.Index = &ind
+	ai.Index = &index
 }
 
 func printVersion() {

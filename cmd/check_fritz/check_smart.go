@@ -14,8 +14,8 @@ func CheckSmartStatus(aI ArgumentInformation) {
 	resps := make(chan []byte)
 	errs := make(chan error)
 
-	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
-	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewIndex", strconv.Itoa(*aI.Index)))
+	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetSpecificDeviceInfos")
+	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewAIN", *aI.Index))
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
@@ -56,8 +56,8 @@ func CheckSmartHeaterTemperatur(aI ArgumentInformation) {
 	resps := make(chan []byte)
 	errs := make(chan error)
 
-	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
-	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewIndex", strconv.Itoa(*aI.Index)))
+	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetSpecificDeviceInfos")
+	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewAIN", *aI.Index))
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
@@ -126,8 +126,8 @@ func CheckSmartSocketPower(aI ArgumentInformation) {
 	resps := make(chan []byte)
 	errs := make(chan error)
 
-	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
-	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewIndex", strconv.Itoa(*aI.Index)))
+	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetSpecificDeviceInfos")
+	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewAIN", *aI.Index))
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
@@ -190,8 +190,8 @@ func CheckSmartSocketEnergy(aI ArgumentInformation) {
 	resps := make(chan []byte)
 	errs := make(chan error)
 
-	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetGenericDeviceInfos")
-	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewIndex", strconv.Itoa(*aI.Index)))
+	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetSpecificDeviceInfos")
+	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewAIN", *aI.Index))
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1)

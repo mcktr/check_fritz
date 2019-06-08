@@ -35,10 +35,10 @@ func DoSoapRequest(soapRequest *SoapData, resps chan<- []byte, errs chan<- error
 		errs <- err
 		return
 	}
-
-	// fmt.Println(string(debugBody))
-
 	resp.Body.Close()
+
+	// enable this for debug sessions
+	// fmt.Println(string(body))
 
 	// create immediately a new request with authentication
 	req, err = newSoapRequest(soapRequest)
@@ -90,6 +90,9 @@ func DoSoapRequest(soapRequest *SoapData, resps chan<- []byte, errs chan<- error
 		return
 	}
 	resp.Body.Close()
+
+	// enable this for debug sessions
+	// fmt.Println(string(body))
 
 	resps <- body
 }
