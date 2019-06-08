@@ -12,27 +12,26 @@ import (
 
 // CheckUpstreamMax checks the maximum upstream that is available on this internet connection
 func CheckUpstreamMax(aI ArgumentInformation) {
-	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
-	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewSyncGroupIndex", "0"))
+	resps := make(chan []byte)
+	errs := make(chan error)
 
-	err := fritz.DoSoapRequest(&soapReq)
+	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
+	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewSyncGroupIndex", "0"))
+	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	if HandleError(err) {
-		return
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+
+	if err != nil {
+		panic(err)
 	}
 
-	var resp = fritz.GetWANCommonInterfaceOnlineMonitorResponse{}
+	soapResp := fritz.WANCommonInterfaceOnlineMonitorResponse{}
+	err = fritz.UnmarshalSoapResponse(&soapResp, res)
 
-	err = fritz.HandleSoapRequest(&soapReq, &resp)
+	upstream, err := strconv.ParseFloat(soapResp.NewMaxUS, 64)
 
-	if HandleError(err) {
-		return
-	}
-
-	upstream, err := strconv.ParseFloat(resp.NewMaxUS, 64)
-
-	if HandleError(err) {
-		return
+	if err != nil {
+		panic(err)
 	}
 
 	upstream = upstream * 8 / 1000000
@@ -73,29 +72,28 @@ func CheckUpstreamMax(aI ArgumentInformation) {
 
 // CheckUpstreamCurrent checks the current used upstream
 func CheckUpstreamCurrent(aI ArgumentInformation) {
-	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
-	fritz.AddSoapRequestVariable(&soapReq, fritz.NewSoapRequestVariable("NewSyncGroupIndex", "0"))
+	resps := make(chan []byte)
+	errs := make(chan error)
 
-	err := fritz.DoSoapRequest(&soapReq)
+	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
+	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewSyncGroupIndex", "0"))
+	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	if HandleError(err) {
-		return
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+
+	if err != nil {
+		panic(err)
 	}
 
-	var resp = fritz.GetWANCommonInterfaceOnlineMonitorResponse{}
+	soapResp := fritz.WANCommonInterfaceOnlineMonitorResponse{}
+	err = fritz.UnmarshalSoapResponse(&soapResp, res)
 
-	err = fritz.HandleSoapRequest(&soapReq, &resp)
-
-	if HandleError(err) {
-		return
-	}
-
-	upstreamWithHistory := strings.Split(resp.NewUSCurrentBPS, ",")
+	upstreamWithHistory := strings.Split(soapResp.NewUSCurrentBPS, ",")
 
 	upstream, err := strconv.ParseFloat(upstreamWithHistory[0], 32)
 
-	if HandleError(err) {
-		return
+	if err != nil {
+		panic(err)
 	}
 
 	upstream = upstream * 8 / 1000000

@@ -4,36 +4,47 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/mcktr/check_fritz/modules/perfdata"
-
 	"github.com/mcktr/check_fritz/modules/fritz"
+	"github.com/mcktr/check_fritz/modules/perfdata"
 )
 
 // CheckConnectionStatus checks the internet connection status
 func CheckConnectionStatus(aI ArgumentInformation) {
-	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wanpppconn1", "WANPPPConnection", "GetInfo")
+	resps := make(chan []byte)
+	errs := make(chan error)
 
-	err := fritz.DoSoapRequest(&soapReq)
+	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wanpppconn1", "WANPPPConnection", "GetInfo")
+	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	if HandleError(err) {
-		return
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+
+	if err != nil {
+		panic(err)
 	}
 
-	var resp = fritz.GetWANPPPConnectionInfoResponse{}
+	soapResp := fritz.WANPPPConnectionResponse{}
+	err = fritz.UnmarshalSoapResponse(&soapResp, res)
 
-	err = fritz.HandleSoapRequest(&soapReq, &resp)
-
-	if HandleError(err) {
-		return
+	if err != nil {
+		panic(err)
 	}
 
-	if resp.NewConnectionStatus == "Connected" {
+	if soapResp.NewConnectionStatus == "Connected" {
+		fmt.Print("OK - Connection Status: " + soapResp.NewConnectionStatus)
 
-		fmt.Print("OK - Connection Status: " + resp.NewConnectionStatus + "; External IP: " + resp.NewExternalIPAddress + "\n")
+		if soapResp.NewExternalIPAddress != "" {
+			fmt.Print("; External IP: " + soapResp.NewExternalIPAddress)
+		}
+
+		fmt.Print("\n")
 
 		GlobalReturnCode = exitOk
+	} else if soapResp.NewConnectionStatus == "" {
+		fmt.Print("UNKNOWN - Connection Status is empty\n")
+
+		GlobalReturnCode = exitUnknown
 	} else {
-		fmt.Print("CRITICAL - Connection Status: " + resp.NewConnectionStatus + "\n")
+		fmt.Print("CRITICAL - Connection Status: " + soapResp.NewConnectionStatus + "\n")
 
 		GlobalReturnCode = exitCritical
 	}
@@ -41,36 +52,45 @@ func CheckConnectionStatus(aI ArgumentInformation) {
 
 // CheckConnectionUptime checks the uptime of the internet connection
 func CheckConnectionUptime(aI ArgumentInformation) {
-	soapReq := fritz.NewSoapRequest(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wanpppconn1", "WANPPPConnection", "GetInfo")
+	resps := make(chan []byte)
+	errs := make(chan error)
 
-	err := fritz.DoSoapRequest(&soapReq)
+	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wanpppconn1", "WANPPPConnection", "GetInfo")
+	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	if HandleError(err) {
-		return
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+
+	if err != nil {
+		panic(err)
 	}
 
-	var resp = fritz.GetWANPPPConnectionInfoResponse{}
+	soapResp := fritz.WANPPPConnectionResponse{}
+	err = fritz.UnmarshalSoapResponse(&soapResp, res)
 
-	err = fritz.HandleSoapRequest(&soapReq, &resp)
-
-	if HandleError(err) {
-		return
+	if err != nil {
+		panic(err)
 	}
 
-	uptime, err := strconv.Atoi(resp.NewUptime)
+	if soapResp.NewUptime != "" {
+		uptime, err := strconv.Atoi(soapResp.NewUptime)
 
-	if HandleError(err) {
-		return
+		if err != nil {
+			panic(err)
+		}
+
+		days := uptime / 86400
+		hours := (uptime / 3600) - (days * 24)
+		minutes := (uptime / 60) - (days * 1440) - (hours * 60)
+		seconds := uptime % 60
+		output := fmt.Sprintf("%dd %dh %dm %ds", days, hours, minutes, seconds)
+		perfData := perfdata.CreatePerformanceData("uptime", float64(uptime), "s")
+
+		fmt.Print("OK - Connection Uptime: " + fmt.Sprintf("%d", uptime) + " seconds (" + output + ") " + perfData.GetPerformanceDataAsString() + "\n")
+
+		GlobalReturnCode = exitOk
+	} else {
+		fmt.Print("UNKNOWN - Connection Uptime is empty\n")
+
+		GlobalReturnCode = exitUnknown
 	}
-
-	days := uptime / 86400
-	hours := (uptime / 3600) - (days * 24)
-	minutes := (uptime / 60) - (days * 1440) - (hours * 60)
-	seconds := uptime % 60
-	output := fmt.Sprintf("%dd %dh %dm %ds", days, hours, minutes, seconds)
-	perfData := perfdata.CreatePerformanceData("uptime", float64(uptime), "s")
-
-	fmt.Print("OK - Connection Uptime: " + fmt.Sprintf("%d", uptime) + " seconds (" + output + ") " + perfData.GetPerformanceDataAsString() + "\n")
-
-	GlobalReturnCode = exitOk
 }

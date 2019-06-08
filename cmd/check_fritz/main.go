@@ -166,6 +166,8 @@ func main() {
 			CheckConnectionUptime(aI)
 		case "device_uptime":
 			CheckDeviceUptime(aI)
+		case "device_update":
+			CheckDeviceUpdate(aI)
 		case "downstream_max":
 			CheckDownstreamMax(aI)
 		case "upstream_max":
@@ -174,8 +176,6 @@ func main() {
 			CheckDownstreamCurrent(aI)
 		case "upstream_current":
 			CheckUpstreamCurrent(aI)
-		case "device_update":
-			CheckDeviceUpdate(aI)
 		case "smart_heatertemperatur":
 			CheckSmartHeaterTemperatur(aI)
 		case "smart_socketpower":

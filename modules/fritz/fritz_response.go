@@ -1,12 +1,17 @@
 package fritz
 
-// Response is the overriding data structure for the SOAP responses
-type Response interface {
+import (
+	"encoding/xml"
+	"time"
+)
+
+// TR064Response is the overriding data structure for the SOAP responses
+type TR064Response interface {
 }
 
-// GetWANPPPConnectionInfoResponse is the data structure for responses from WANPPPConnection
-type GetWANPPPConnectionInfoResponse struct {
-	Response
+// WANPPPConnectionResponse is the data structure for responses from WANPPPConnection
+type WANPPPConnectionResponse struct {
+	TR064Response
 	NewEnable                  string `xml:"Body>GetInfoResponse>NewEnable"`
 	NewConnectionStatus        string `xml:"Body>GetInfoResponse>NewConnectionStatus"`
 	NewPossibleConnectionTypes string `xml:"Body>GetInfoResponse>NewPossibleConnectionTypes"`
@@ -39,9 +44,9 @@ type GetWANPPPConnectionInfoResponse struct {
 	NewDNSOverrideAllowed      string `xml:"Body>GetInfoResponse>NewDNSOverrideAllowed"`
 }
 
-// GetDeviceInfoResponse is the data structure for responses from DeviceInfo
-type GetDeviceInfoResponse struct {
-	Response
+// DeviceInfoResponse is the data structure for responses from DeviceInfo
+type DeviceInfoResponse struct {
+	TR064Response
 	NewManufacturerName string `xml:"Body>GetInfoResponse>NewManufacturerName"`
 	NewManufacturerOUI  string `xml:"Body>GetInfoResponse>NewManufacturerOUI"`
 	NewModelName        string `xml:"Body>GetInfoResponse>NewModelName"`
@@ -56,9 +61,23 @@ type GetDeviceInfoResponse struct {
 	NewDeviceLog        string `xml:"Body>GetInfoResponse>NewDeviceLog"`
 }
 
-// GetWANCommonInterfaceOnlineMonitorResponse is the data structure for responses from WANCommonInterfaceConfig
-type GetWANCommonInterfaceOnlineMonitorResponse struct {
-	Response
+// UserInterfaceInfoResponse is the data structure for responses from UserInterface
+type UserInterfaceInfoResponse struct {
+	TR064Response
+	NewUpgradeAvailable       string `xml:"Body>GetInfoResponse>NewUpgradeAvailable"`
+	NewPasswordRequired       string `xml:"Body>GetInfoResponse>NewPasswordRequired"`
+	NewPasswordUserSelectable string `xml:"Body>GetInfoResponse>NewPasswordUserSelectable"`
+	NewWarrantyDate           string `xml:"Body>GetInfoResponse>NewWarrantyDate"`
+	NewXAVMDEVersion          string `xml:"Body>GetInfoResponse>NewX_AVM-DE_Version"`
+	NewXAVMDEDownloadURL      string `xml:"Body>GetInfoResponse>NewX_AVM-DE_DownloadURL"`
+	NewXAVMDEInfoURL          string `xml:"Body>GetInfoResponse>NewX_AVM-DE_InfoURL"`
+	NewXAVMDEUpdateState      string `xml:"Body>GetInfoResponse>NewX_AVM-DE_UpdateState"`
+	NewXAVMDELaborVersion     string `xml:"Body>GetInfoResponse>NewX_AVM-DE_LaborVersion"`
+}
+
+// WANCommonInterfaceOnlineMonitorResponse is the data structure for responses from WANCommonInterfaceConfig
+type WANCommonInterfaceOnlineMonitorResponse struct {
+	TR064Response
 	NewTotalNumberSyncGroups string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>NewTotalNumberSyncGroups"`
 	NewSyncGroupName         string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>NewSyncGroupName"`
 	NewSyncGroupMode         string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>NewSyncGroupMode"`
@@ -73,23 +92,9 @@ type GetWANCommonInterfaceOnlineMonitorResponse struct {
 	NewPrioLowBPS            string `xml:"Body>X_AVM-DE_GetOnlineMonitorResponse>Newprio_low_bps"`
 }
 
-// GetInterfaceInfoResponse is the data structure for responses from UserInterface
-type GetInterfaceInfoResponse struct {
-	Response
-	NewUpgradeAvailable       string `xml:"Body>GetInfoResponse>NewUpgradeAvailable"`
-	NewPasswordRequired       string `xml:"Body>GetInfoResponse>NewPasswordRequired"`
-	NewPasswordUserSelectable string `xml:"Body>GetInfoResponse>NewPasswordUserSelectable"`
-	NewWarrantyDate           string `xml:"Body>GetInfoResponse>NewWarrantyDate"`
-	NewXAVMDEVersion          string `xml:"Body>GetInfoResponse>NewX_AVM-DE_Version"`
-	NewXAVMDEDownloadURL      string `xml:"Body>GetInfoResponse>NewX_AVM-DE_DownloadURL"`
-	NewXAVMDEInfoURL          string `xml:"Body>GetInfoResponse>NewX_AVM-DE_InfoURL"`
-	NewXAVMDEUpdateState      string `xml:"Body>GetInfoResponse>NewX_AVM-DE_UpdateState"`
-	NewXAVMDELaborVersion     string `xml:"Body>GetInfoResponse>NewX_AVM-DE_LaborVersion"`
-}
-
-// GetSmartDeviceInfoResponse is the data structure for responses from X_AVM-DE_Homeauto
-type GetSmartDeviceInfoResponse struct {
-	Response
+// SmartDeviceInfoResponse is the data structure for responses from X_AVM-DE_Homeauto
+type SmartDeviceInfoResponse struct {
+	TR064Response
 	NewAIN                    string `xml:"Body>GetGenericDeviceInfosResponse>NewAIN"`
 	NewDeviceID               string `xml:"Body>GetGenericDeviceInfosResponse>NewDeviceId"`
 	NewFunctionBitMask        string `xml:"Body>GetGenericDeviceInfosResponse>NewFunctionBitMask"`
@@ -120,4 +125,49 @@ type GetSmartDeviceInfoResponse struct {
 	NewHkrReduceTemperature   string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrReduceTemperature"`
 	NewHkrComfortVentilStatus string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrComfortVentilStatus"`
 	NewHkrComfortTemperature  string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrComfortTemperature"`
+}
+
+// UnmarshalSoapResponse unmarshals the soap response to the data structure
+func UnmarshalSoapResponse(resp TR064Response, inputXML [][]byte) error {
+	for i := range inputXML {
+
+		err := xml.Unmarshal(inputXML[i], &resp)
+
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// ProcessSoapResponse handles the SOAP response from channels
+func ProcessSoapResponse(resps chan []byte, errs chan error, count int) ([][]byte, error) {
+	results := make([][]byte, 0)
+
+	for {
+		timedout := false
+
+		select {
+		case err := <-errs:
+			if err != nil {
+				return results, err
+			}
+		case res := <-resps:
+			count--
+			results = append(results, res)
+
+			if count <= 0 {
+				break
+			}
+		case <-time.After(60 * time.Second):
+			// TODO: Timeout
+			panic("Timeout")
+		}
+
+		if count <= 0 || timedout {
+			break
+		}
+	}
+
+	return results, nil
 }
