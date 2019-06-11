@@ -95,6 +95,41 @@ type WANCommonInterfaceOnlineMonitorResponse struct {
 // SmartDeviceInfoResponse is the data structure for responses from X_AVM-DE_Homeauto
 type SmartDeviceInfoResponse struct {
 	TR064Response
+	NewAIN                    string `xml:"Body>GetGenericDeviceInfosResponse>NewAIN"`
+	NewDeviceID               string `xml:"Body>GetGenericDeviceInfosResponse>NewDeviceId"`
+	NewFunctionBitMask        string `xml:"Body>GetGenericDeviceInfosResponse>NewFunctionBitMask"`
+	NewFirmwareVersion        string `xml:"Body>GetGenericDeviceInfosResponse>NewFirmwareVersion"`
+	NewManufacturer           string `xml:"Body>GetGenericDeviceInfosResponse>NewManufacturer"`
+	NewProductName            string `xml:"Body>GetGenericDeviceInfosResponse>NewProductName"`
+	NewDeviceName             string `xml:"Body>GetGenericDeviceInfosResponse>NewDeviceName"`
+	NewPresent                string `xml:"Body>GetGenericDeviceInfosResponse>NewPresent"`
+	NewMultimeterIsEnabled    string `xml:"Body>GetGenericDeviceInfosResponse>NewMultimeterIsEnabled"`
+	NewMultimeterIsValid      string `xml:"Body>GetGenericDeviceInfosResponse>NewMultimeterIsValid"`
+	NewMultimeterPower        string `xml:"Body>GetGenericDeviceInfosResponse>NewMultimeterPower"`
+	NewMultimeterEnergy       string `xml:"Body>GetGenericDeviceInfosResponse>NewMultimeterEnergy"`
+	NewTemperatureIsEnabled   string `xml:"Body>GetGenericDeviceInfosResponse>NewTemperatureIsEnabled"`
+	NewTemperatureIsValid     string `xml:"Body>GetGenericDeviceInfosResponse>NewTemperatureIsValid"`
+	NewTemperatureCelsius     string `xml:"Body>GetGenericDeviceInfosResponse>NewTemperatureCelsius"`
+	NewTemperatureOffset      string `xml:"Body>GetGenericDeviceInfosResponse>NewTemperatureOffset"`
+	NewSwitchIsEnabled        string `xml:"Body>GetGenericDeviceInfosResponse>NewSwitchIsEnabled"`
+	NewSwitchIsValid          string `xml:"Body>GetGenericDeviceInfosResponse>NewSwitchIsValid"`
+	NewSwitchState            string `xml:"Body>GetGenericDeviceInfosResponse>NewSwitchState"`
+	NewSwitchMode             string `xml:"Body>GetGenericDeviceInfosResponse>NewSwitchMode"`
+	NewSwitchLock             string `xml:"Body>GetGenericDeviceInfosResponse>NewSwitchLock"`
+	NewHkrIsEnabled           string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrIsEnabled"`
+	NewHkrIsValid             string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrIsValid"`
+	NewHkrIsTemperature       string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrIsTemperature"`
+	NewHkrSetVentilStatus     string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrSetVentilStatus"`
+	NewHkrSetTemperature      string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrSetTemperature"`
+	NewHkrReduceVentilStatus  string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrReduceVentilStatus"`
+	NewHkrReduceTemperature   string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrReduceTemperature"`
+	NewHkrComfortVentilStatus string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrComfortVentilStatus"`
+	NewHkrComfortTemperature  string `xml:"Body>GetGenericDeviceInfosResponse>NewHkrComfortTemperature"`
+}
+
+// SmartSpecificDeviceInfoResponse is the data structure for responses from X_AVM-DE_Homeauto
+type SmartSpecificDeviceInfoResponse struct {
+	TR064Response
 	NewAIN                    string `xml:"Body>GetSpecificDeviceInfosResponseResponse>NewAIN"`
 	NewDeviceID               string `xml:"Body>GetSpecificDeviceInfosResponseResponse>NewDeviceId"`
 	NewFunctionBitMask        string `xml:"Body>GetSpecificDeviceInfosResponseResponse>NewFunctionBitMask"`
