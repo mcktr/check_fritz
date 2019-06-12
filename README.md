@@ -57,16 +57,17 @@ Ensure that you also set the executable bit with `chmod +x check_fritz`.
 
 ### Parameter
 
-| Parameter (short) | Parameter (long) | Description                                                                                   |
-|-------------------|------------------|-----------------------------------------------------------------------------------------------|
-| `-H`              | `--hostname`     | **Optional.** IP-Address or Hostname of the Fritz!Box. Defaults to `fritz.box`.               |
-| `-P`              | `--port`         | **Optional.** Port for TR-064 over SSL. Defaults to `49443`.                                  |
-| `-u`              | `--username`     | **Optional.** Fritz!Box web interface Username for authentication. Defaults to `dslf-config`. |
-| `-p`              | `--password`     | **Required.** Fritz!Box web interface Password for authentication.                            |
-| `-m`              | `--method`       | **Optional.** Defines the used check method. Defaults to `connection_status`.                 |
-| `-w`              | `--warning`      | **Optional.** Defines a warning threshold. Defaults to none.                                  |
-| `-c`              | `--critical`     | **Optinal.** Defines a critical threshold. Defaults to none.                                  |
-| `-i`              | `--index`        | **Optinal.** Defines a index value required by some check methods. Defaults to none.          |
+| Parameter (short) | Parameter (long) | Description                                                                                                                           |
+|-------------------|------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| `-H`              | `--hostname`     | **Optional.** IP-Address or Hostname of the Fritz!Box. Defaults to `fritz.box`.                                                       |
+| `-P`              | `--port`         | **Optional.** Port for TR-064 over SSL. Defaults to `49443`.                                                                          |
+| `-u`              | `--username`     | **Optional.** Fritz!Box web interface Username for authentication. Defaults to `dslf-config`.                                         |
+| `-p`              | `--password`     | **Required.** Fritz!Box web interface Password for authentication.                                                                    |
+| `-m`              | `--method`       | **Optional.** Defines the used check method. Defaults to `connection_status`.                                                         |
+| `-w`              | `--warning`      | **Optional.** Defines a warning threshold. Defaults to none.                                                                          |
+| `-c`              | `--critical`     | **Optional.** Defines a critical threshold. Defaults to none.                                                                         |
+| `-i`              | `--index`        | **DEPRECATED.** **Optional.** Defines a index value required by some check methods. Defaults to none. _Marked for removal in v1.2.0._ |
+| `-a`              | `--ain`          | **Optional.** Defines the AIN required by smart device check methods. Defaults to none.                                               |
 
 > **Note:**
 >
@@ -75,19 +76,19 @@ Ensure that you also set the executable bit with `chmod +x check_fritz`.
 
 ### Methods
 
-| Name                     | Description                                                  |
-|--------------------------|--------------------------------------------------------------|
-| `connection_status`      | WAN connection status.                                       |
-| `connection_uptime`      | WAN connection uptime in seconds.                            |
-| `device_uptime`          | Device uptime in seconds.                                    |
-| `device_update`          | Update state.                                                |
-| `downstream_max`         | Maximum downstream.                                          |
-| `downstream_current`     | Current downstream.                                          |
-| `smart_heatertemperatur` | Current temperature of a radiator thermostat.                |
-| `smart_socketpower`      | Current power consumption of a socket switch.                |
-| `smart_socketenergy`     | Total power consumption of the last year of a socket switch. |
-| `upstream_max`           | Maximum upstream.                                            |
-| `upstream_current`       | Current upstream.                                            |
+| Name                     | Description                                                                 |
+|--------------------------|-----------------------------------------------------------------------------|
+| `connection_status`      | WAN connection status.                                                      |
+| `connection_uptime`      | WAN connection uptime in seconds.                                           |
+| `device_uptime`          | Device uptime in seconds.                                                   |
+| `device_update`          | Update state.                                                               |
+| `downstream_max`         | Maximum downstream.                                                         |
+| `downstream_current`     | Current downstream.                                                         |
+| `smart_heatertemperatur` | Current temperature of a radiator thermostat. Requires AIN.                 |
+| `smart_socketpower`      | Current power consumption of a socket switch. Requires AIN.                 |
+| `smart_socketenergy`     | Total power consumption of the last year of a socket switch.  Requires AIN. |
+| `upstream_max`           | Maximum upstream.                                                           |
+| `upstream_current`       | Current upstream.                                                           |
 
 ### Icinga 2 CheckCommand
 
@@ -107,6 +108,7 @@ object CheckCommand "fritz" {
 		"--warning" = "$fritz_warning$"
 		"--critical" = "$fritz_critical$"
 		"--index" = "$fritz_index$"
+		"--ain" = "$fritz_ain$"
 	}
 
 	vars.fritz_hostname = "$address$"
