@@ -22,14 +22,15 @@ var GlobalReturnCode = exitUnknown
 
 // ArgumentInformation is the data structure for the passed arguments
 type ArgumentInformation struct {
-	Hostname *string
-	Port     *string
-	Username *string
-	Password *string
-	Method   *string
-	Warning  *float64
-	Critical *float64
-	Index    *int
+	Hostname      *string
+	Port          *string
+	Username      *string
+	Password      *string
+	Method        *string
+	Warning       *float64
+	Critical      *float64
+	Index         *string
+	InputVariable *string
 }
 
 func createRequiredArgumentInformation(hostname string, port string, username string, password string, method string) ArgumentInformation {
@@ -66,13 +67,11 @@ func (ai *ArgumentInformation) createCriticalThreshold(critical string) {
 }
 
 func (ai *ArgumentInformation) createIndex(index string) {
-	ind, err := strconv.Atoi(index)
+	ai.Index = &index
+}
 
-	if HandleError(err) {
-		return
-	}
-
-	ai.Index = &ind
+func (ai *ArgumentInformation) createInputVariable(v string) {
+	ai.InputVariable = &v
 }
 
 func printVersion() {
@@ -120,7 +119,8 @@ func main() {
 	cmdline.AddOption("m", "method", "value", "Specifies the check method. (Default: connection_status)")
 	cmdline.AddOption("w", "warning", "value", "Specifies the warning threshold.")
 	cmdline.AddOption("c", "critical", "value", "Specifies the critical threshold.")
-	cmdline.AddOption("i", "index", "value", "Specifies the index.")
+	cmdline.AddOption("i", "index", "value", "DEPRECATED: Specifies the index.")
+	cmdline.AddOption("a", "ain", "value", "Specifies the AIN for smart devices.")
 
 	cmdline.AddFlag("V", "version", "Returns the version")
 
@@ -155,6 +155,10 @@ func main() {
 			aI.createIndex(cmdline.OptionValue("index"))
 		}
 
+		if cmdline.IsOptionSet("ain") {
+			aI.createInputVariable(cmdline.OptionValue("ain"))
+		}
+
 		if !checkRequiredFlags(&aI) {
 			os.Exit(exitUnknown)
 		}
@@ -177,13 +181,29 @@ func main() {
 		case "upstream_current":
 			CheckUpstreamCurrent(aI)
 		case "smart_heatertemperatur":
-			CheckSmartHeaterTemperatur(aI)
+			if cmdline.IsOptionSet("index") {
+				CheckSmartHeaterTemperatur(aI)
+			} else {
+				CheckSpecificSmartHeaterTemperatur(aI)
+			}
 		case "smart_socketpower":
-			CheckSmartSocketPower(aI)
+			if cmdline.IsOptionSet("index") {
+				CheckSmartSocketPower(aI)
+			} else {
+				CheckSpecificSmartSocketPower(aI)
+			}
 		case "smart_socketenergy":
-			CheckSmartSocketEnergy(aI)
+			if cmdline.IsOptionSet("index") {
+				CheckSmartSocketEnergy(aI)
+			} else {
+				CheckSpecificSmartSocketEnergy(aI)
+			}
 		case "smart_status":
-			CheckSmartStatus(aI)
+			if cmdline.IsOptionSet("index") {
+				CheckSmartStatus(aI)
+			} else {
+				CheckSpecificSmartStatus(aI)
+			}
 		default:
 			fmt.Println("Unknown method.")
 			GlobalReturnCode = exitUnknown
