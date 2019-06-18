@@ -131,3 +131,75 @@ func CheckUpstreamCurrent(aI ArgumentInformation) {
 		fmt.Print("UNKNWON - Not able to calculate current upstream\n")
 	}
 }
+
+// CheckUpstreamUsage checks the total and current upstream and calculates the utilization
+func CheckUpstreamUsage(aI ArgumentInformation) {
+	resps := make(chan []byte)
+	errs := make(chan error)
+
+	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
+	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewSyncGroupIndex", "0"))
+	go fritz.DoSoapRequest(&soapReq, resps, errs)
+
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+
+	if err != nil {
+		panic(err)
+	}
+
+	soapResp := fritz.WANCommonInterfaceOnlineMonitorResponse{}
+	err = fritz.UnmarshalSoapResponse(&soapResp, res)
+
+	upstreamWithHistory := strings.Split(soapResp.NewUSCurrentBPS, ",")
+	upstreamCurrent, err := strconv.ParseFloat(upstreamWithHistory[0], 64)
+
+	if err != nil {
+		panic(err)
+	}
+
+	upstreamMax, err := strconv.ParseFloat(soapResp.NewMaxUS, 64)
+
+	if err != nil {
+		panic(err)
+	}
+
+	upstreamCurrent = upstreamCurrent * 8 / 1000000
+	upstreamMax = upstreamMax * 8 / 1000000
+	upstreamUsage := 100 / upstreamMax * upstreamCurrent
+	perfData := perfdata.CreatePerformanceData("upstream_usage", upstreamUsage, "")
+
+	perfData.SetMinimum(0.0)
+	perfData.SetMaximum(100.0)
+
+	GlobalReturnCode = exitOk
+
+	if thresholds.IsSet(aI.Warning) {
+		perfData.SetWarning(*aI.Warning)
+
+		if thresholds.CheckUpper(*aI.Warning, upstreamUsage) {
+			GlobalReturnCode = exitWarning
+		}
+	}
+
+	if thresholds.IsSet(aI.Critical) {
+		perfData.SetCritical(*aI.Critical)
+
+		if thresholds.CheckUpper(*aI.Critical, upstreamUsage) {
+			GlobalReturnCode = exitCritical
+		}
+	}
+
+	output := " - " + fmt.Sprintf("%.2f", upstreamUsage) + "% Upstream utilization (" + fmt.Sprintf("%.2f", upstreamCurrent) + " Mbit/s of " + fmt.Sprintf("%.2f", upstreamMax) + " Mbits) " + perfData.GetPerformanceDataAsString()
+
+	switch GlobalReturnCode {
+	case exitOk:
+		fmt.Print("OK" + output + "\n")
+	case exitWarning:
+		fmt.Print("WARNING" + output + "\n")
+	case exitCritical:
+		fmt.Print("CRITICAL" + output + "\n")
+	default:
+		GlobalReturnCode = exitUnknown
+		fmt.Print("UNKNWON - Not able to calculate upstream utilization\n")
+	}
+}
