@@ -178,6 +178,10 @@ func main() {
 			CheckUpstreamMax(aI)
 		case "downstream_current":
 			CheckDownstreamCurrent(aI)
+		case "downstream_usage":
+			CheckDownstreamUsage(aI)
+		case "upstream_usage":
+			CheckUpstreamUsage(aI)
 		case "upstream_current":
 			CheckUpstreamCurrent(aI)
 		case "smart_heatertemperatur":
