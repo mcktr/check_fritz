@@ -84,12 +84,14 @@ Ensure that you also set the executable bit with `chmod +x check_fritz`.
 | `device_update`          | Update state.                                                               |
 | `downstream_max`         | Maximum downstream.                                                         |
 | `downstream_current`     | Current downstream.                                                         |
+| `downstream_usage`       | Current downstream usage.                                                   |
 | `smart_heatertemperatur` | Current temperature of a radiator thermostat. Requires AIN.                 |
 | `smart_socketpower`      | Current power consumption of a socket switch. Requires AIN.                 |
 | `smart_socketenergy`     | Total power consumption of the last year of a socket switch.  Requires AIN. |
 | `smart_status`           | Current smart device connection status. Requires AIN.                       |
 | `upstream_max`           | Maximum upstream.                                                           |
 | `upstream_current`       | Current upstream.                                                           |
+| `upstream_usage`         | Current upstream usage.                                                     |
 
 ### Icinga 2 CheckCommand
 
