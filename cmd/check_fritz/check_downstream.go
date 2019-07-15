@@ -22,7 +22,8 @@ func CheckDownstreamMax(aI ArgumentInformation) {
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
 
 	if err != nil {
-		panic(err)
+		fmt.Printf("UNKNOWN - %s\n", err)
+		return
 	}
 
 	soapResp := fritz.WANCommonInterfaceOnlineMonitorResponse{}
@@ -82,7 +83,8 @@ func CheckDownstreamCurrent(aI ArgumentInformation) {
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
 
 	if err != nil {
-		panic(err)
+		fmt.Printf("UNKNOWN - %s\n", err)
+		return
 	}
 
 	soapResp := fritz.WANCommonInterfaceOnlineMonitorResponse{}
@@ -144,7 +146,8 @@ func CheckDownstreamUsage(aI ArgumentInformation) {
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
 
 	if err != nil {
-		panic(err)
+		fmt.Printf("UNKNOWN - %s\n", err)
+		return
 	}
 
 	soapResp := fritz.WANCommonInterfaceOnlineMonitorResponse{}

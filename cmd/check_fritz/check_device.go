@@ -19,7 +19,8 @@ func CheckDeviceUptime(aI ArgumentInformation) {
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
 
 	if err != nil {
-		panic(err)
+		fmt.Printf("UNKNOWN - %s\n", err)
+		return
 	}
 
 	soapResp := fritz.DeviceInfoResponse{}
@@ -59,7 +60,8 @@ func CheckDeviceUpdate(aI ArgumentInformation) {
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
 
 	if err != nil {
-		panic(err)
+		fmt.Printf("UNKNOWN - %s\n", err)
+		return
 	}
 
 	soapResp := fritz.UserInterfaceInfoResponse{}
