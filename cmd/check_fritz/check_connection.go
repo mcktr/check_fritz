@@ -19,7 +19,8 @@ func CheckConnectionStatus(aI ArgumentInformation) {
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
 
 	if err != nil {
-		panic(err)
+		fmt.Printf("UNKNOWN - %s\n", err)
+		return
 	}
 
 	soapResp := fritz.WANPPPConnectionResponse{}
@@ -61,7 +62,8 @@ func CheckConnectionUptime(aI ArgumentInformation) {
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
 
 	if err != nil {
-		panic(err)
+		fmt.Printf("UNKNOWN - %s\n", err)
+		return
 	}
 
 	soapResp := fritz.WANPPPConnectionResponse{}

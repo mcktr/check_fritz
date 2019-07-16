@@ -21,7 +21,8 @@ func CheckSpecificSmartStatus(aI ArgumentInformation) {
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
 
 	if err != nil {
-		panic(err)
+		fmt.Printf("UNKNOWN - %s\n", err)
+		return
 	}
 
 	soapResp := fritz.SmartSpecificDeviceInfoResponse{}
@@ -63,7 +64,8 @@ func CheckSpecificSmartHeaterTemperatur(aI ArgumentInformation) {
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
 
 	if err != nil {
-		panic(err)
+		fmt.Printf("UNKNOWN - %s\n", err)
+		return
 	}
 
 	soapResp := fritz.SmartSpecificDeviceInfoResponse{}
@@ -133,7 +135,8 @@ func CheckSpecificSmartSocketPower(aI ArgumentInformation) {
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
 
 	if err != nil {
-		panic(err)
+		fmt.Printf("UNKNOWN - %s\n", err)
+		return
 	}
 
 	soapResp := fritz.SmartSpecificDeviceInfoResponse{}
@@ -197,7 +200,8 @@ func CheckSpecificSmartSocketEnergy(aI ArgumentInformation) {
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
 
 	if err != nil {
-		panic(err)
+		fmt.Printf("UNKNOWN - %s\n", err)
+		return
 	}
 
 	soapResp := fritz.SmartSpecificDeviceInfoResponse{}
@@ -265,7 +269,8 @@ func CheckSmartStatus(aI ArgumentInformation) {
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
 
 	if err != nil {
-		panic(err)
+		fmt.Printf("UNKNOWN - %s\n", err)
+		return
 	}
 
 	soapResp := fritz.SmartDeviceInfoResponse{}
@@ -307,7 +312,8 @@ func CheckSmartHeaterTemperatur(aI ArgumentInformation) {
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
 
 	if err != nil {
-		panic(err)
+		fmt.Printf("UNKNOWN - %s\n", err)
+		return
 	}
 
 	soapResp := fritz.SmartDeviceInfoResponse{}
@@ -377,7 +383,8 @@ func CheckSmartSocketPower(aI ArgumentInformation) {
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
 
 	if err != nil {
-		panic(err)
+		fmt.Printf("UNKNOWN - %s\n", err)
+		return
 	}
 
 	soapResp := fritz.SmartDeviceInfoResponse{}
@@ -441,7 +448,8 @@ func CheckSmartSocketEnergy(aI ArgumentInformation) {
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
 
 	if err != nil {
-		panic(err)
+		fmt.Printf("UNKNOWN - %s\n", err)
+		return
 	}
 
 	soapResp := fritz.SmartDeviceInfoResponse{}
