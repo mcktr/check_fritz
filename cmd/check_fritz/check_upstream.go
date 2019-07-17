@@ -19,7 +19,7 @@ func CheckUpstreamMax(aI ArgumentInformation) {
 	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewSyncGroupIndex", "0"))
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 
 	if err != nil {
 		fmt.Printf("UNKNOWN - %s\n", err)
@@ -80,7 +80,7 @@ func CheckUpstreamCurrent(aI ArgumentInformation) {
 	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewSyncGroupIndex", "0"))
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 
 	if err != nil {
 		fmt.Printf("UNKNOWN - %s\n", err)
@@ -143,7 +143,7 @@ func CheckUpstreamUsage(aI ArgumentInformation) {
 	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewSyncGroupIndex", "0"))
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 
 	if err != nil {
 		fmt.Printf("UNKNOWN - %s\n", err)

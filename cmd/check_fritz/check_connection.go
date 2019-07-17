@@ -16,7 +16,7 @@ func CheckConnectionStatus(aI ArgumentInformation) {
 	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wanpppconn1", "WANPPPConnection", "GetInfo")
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 
 	if err != nil {
 		fmt.Printf("UNKNOWN - %s\n", err)
@@ -59,7 +59,7 @@ func CheckConnectionUptime(aI ArgumentInformation) {
 	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wanpppconn1", "WANPPPConnection", "GetInfo")
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 
 	if err != nil {
 		fmt.Printf("UNKNOWN - %s\n", err)

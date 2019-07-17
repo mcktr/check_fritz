@@ -16,7 +16,7 @@ func CheckDeviceUptime(aI ArgumentInformation) {
 	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/deviceinfo", "DeviceInfo", "GetInfo")
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 
 	if err != nil {
 		fmt.Printf("UNKNOWN - %s\n", err)
@@ -57,7 +57,7 @@ func CheckDeviceUpdate(aI ArgumentInformation) {
 	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/userif", "UserInterface", "GetInfo")
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 
 	if err != nil {
 		fmt.Printf("UNKNOWN - %s\n", err)

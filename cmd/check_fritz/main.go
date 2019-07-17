@@ -31,6 +31,7 @@ type ArgumentInformation struct {
 	Critical      *float64
 	Index         *string
 	InputVariable *string
+	Timeout       *int
 }
 
 func createRequiredArgumentInformation(hostname string, port string, username string, password string, method string) ArgumentInformation {
@@ -72,6 +73,16 @@ func (ai *ArgumentInformation) createIndex(index string) {
 
 func (ai *ArgumentInformation) createInputVariable(v string) {
 	ai.InputVariable = &v
+}
+
+func (ai *ArgumentInformation) createTimeout(t string) {
+	timeout, err := strconv.Atoi(t)
+
+	if HandleError(err) {
+		return
+	}
+
+	ai.Timeout = &timeout
 }
 
 func printVersion() {
@@ -121,6 +132,7 @@ func main() {
 	cmdline.AddOption("c", "critical", "value", "Specifies the critical threshold.")
 	cmdline.AddOption("i", "index", "value", "DEPRECATED: Specifies the index.")
 	cmdline.AddOption("a", "ain", "value", "Specifies the AIN for smart devices.")
+	cmdline.AddOption("t", "timeout", "value", "Specifies the timeout for the request.")
 
 	cmdline.AddFlag("V", "version", "Returns the version")
 
@@ -157,6 +169,10 @@ func main() {
 
 		if cmdline.IsOptionSet("ain") {
 			aI.createInputVariable(cmdline.OptionValue("ain"))
+		}
+
+		if cmdline.IsOptionSet("timeout") {
+			aI.createTimeout(cmdline.OptionValue("timeout"))
 		}
 
 		if !checkRequiredFlags(&aI) {
