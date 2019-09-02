@@ -34,7 +34,7 @@ type ArgumentInformation struct {
 	Timeout       *int
 }
 
-func createRequiredArgumentInformation(hostname string, port string, username string, password string, method string) ArgumentInformation {
+func createRequiredArgumentInformation(hostname string, port string, username string, password string, method string, timeout string) ArgumentInformation {
 	var ai ArgumentInformation
 
 	ai.Hostname = &hostname
@@ -42,6 +42,8 @@ func createRequiredArgumentInformation(hostname string, port string, username st
 	ai.Username = &username
 	ai.Password = &password
 	ai.Method = &method
+
+	ai.createTimeout(timeout)
 
 	return ai
 }
@@ -140,6 +142,7 @@ func main() {
 	cmdline.SetOptionDefault("port", "49443")
 	cmdline.SetOptionDefault("username", "dslf-config")
 	cmdline.SetOptionDefault("method", "connection_status")
+	cmdline.SetOptionDefault("timeout", "90")
 
 	cmdline.Parse(os.Args)
 
@@ -152,8 +155,9 @@ func main() {
 		username := cmdline.OptionValue("username")
 		password := cmdline.OptionValue("password")
 		method := cmdline.OptionValue("method")
+		timeout := cmdline.OptionValue("timeout")
 
-		aI := createRequiredArgumentInformation(hostname, port, username, password, method)
+		aI := createRequiredArgumentInformation(hostname, port, username, password, method, timeout)
 
 		if cmdline.IsOptionSet("warning") {
 			aI.createWarningThreshold(cmdline.OptionValue("warning"))
@@ -169,10 +173,6 @@ func main() {
 
 		if cmdline.IsOptionSet("ain") {
 			aI.createInputVariable(cmdline.OptionValue("ain"))
-		}
-
-		if cmdline.IsOptionSet("timeout") {
-			aI.createTimeout(cmdline.OptionValue("timeout"))
 		}
 
 		if !checkRequiredFlags(&aI) {
