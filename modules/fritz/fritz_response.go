@@ -2,6 +2,7 @@ package fritz
 
 import (
 	"encoding/xml"
+	"fmt"
 	"time"
 )
 
@@ -195,7 +196,7 @@ func ProcessSoapResponse(resps chan []byte, errs chan error, count int, timeout 
 				break
 			}
 		case <-time.After(time.Duration(timeout) * time.Second):
-			panic("Timeout")
+			return nil, fmt.Errorf("Ran into a timeout after %d seconds", timeout)
 		}
 
 		if count <= 0 || timedout {
