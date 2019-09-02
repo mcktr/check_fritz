@@ -112,11 +112,11 @@ func HandleError(err error) bool {
 func main() {
 	cmdline := cmdline.New()
 
-	cmdline.AddOption("H", "hostname", "value", "Specifies the hostname. (Default: fritz.box)")
-	cmdline.AddOption("P", "port", "value", "Specifies the SSL port. (Default: 49443)")
-	cmdline.AddOption("u", "username", "value", "Specifies the username. (Default: dslf-config)")
+	cmdline.AddOption("H", "hostname", "value", "Specifies the hostname.")
+	cmdline.AddOption("P", "port", "value", "Specifies the SSL port.")
+	cmdline.AddOption("u", "username", "value", "Specifies the username.")
 	cmdline.AddOption("p", "password", "value", "Specifies the password.")
-	cmdline.AddOption("m", "method", "value", "Specifies the check method. (Default: connection_status)")
+	cmdline.AddOption("m", "method", "value", "Specifies the check method.")
 	cmdline.AddOption("w", "warning", "value", "Specifies the warning threshold.")
 	cmdline.AddOption("c", "critical", "value", "Specifies the critical threshold.")
 	cmdline.AddOption("i", "index", "value", "DEPRECATED: Specifies the index.")
