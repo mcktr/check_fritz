@@ -49,7 +49,7 @@ check_fritz.linux.amd64: OK
 The checksum verification must return OK.
 
 If you successfully verified the checksum, move the check plugin binary to your Icinga 2 plugin directory. It is also 
-recommended to rename the binary package to `check_fritz`, since the additon is only required for the checksum verification.
+recommended to rename the binary package to `check_fritz`, since the suffix is only required for the checksum verification.
 
 Ensure that you also set the executable bit with `chmod +x check_fritz`.
 
@@ -96,7 +96,7 @@ Ensure that you also set the executable bit with `chmod +x check_fritz`.
 ### Icinga 2 CheckCommand
 
 You can use this predefined Icinga 2 CheckCommand. For more information about CheckCommand objects please refere to 
-the offical [Icinga 2 documenation](https://icinga.com/docs/icinga2/latest/). 
+the official [Icinga 2 documenation](https://icinga.com/docs/icinga2/latest/). 
 
 ```
 object CheckCommand "fritz" {
