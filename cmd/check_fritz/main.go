@@ -31,9 +31,10 @@ type ArgumentInformation struct {
 	Critical      *float64
 	Index         *string
 	InputVariable *string
+	Timeout       *int
 }
 
-func createRequiredArgumentInformation(hostname string, port string, username string, password string, method string) ArgumentInformation {
+func createRequiredArgumentInformation(hostname string, port string, username string, password string, method string, timeout string) ArgumentInformation {
 	var ai ArgumentInformation
 
 	ai.Hostname = &hostname
@@ -41,6 +42,8 @@ func createRequiredArgumentInformation(hostname string, port string, username st
 	ai.Username = &username
 	ai.Password = &password
 	ai.Method = &method
+
+	ai.createTimeout(timeout)
 
 	return ai
 }
@@ -72,6 +75,16 @@ func (ai *ArgumentInformation) createIndex(index string) {
 
 func (ai *ArgumentInformation) createInputVariable(v string) {
 	ai.InputVariable = &v
+}
+
+func (ai *ArgumentInformation) createTimeout(t string) {
+	timeout, err := strconv.Atoi(t)
+
+	if HandleError(err) {
+		return
+	}
+
+	ai.Timeout = &timeout
 }
 
 func printVersion() {
@@ -121,6 +134,7 @@ func main() {
 	cmdline.AddOption("c", "critical", "value", "Specifies the critical threshold.")
 	cmdline.AddOption("i", "index", "value", "DEPRECATED: Specifies the index.")
 	cmdline.AddOption("a", "ain", "value", "Specifies the AIN for smart devices.")
+	cmdline.AddOption("t", "timeout", "value", "Specifies the timeout for the request.")
 
 	cmdline.AddFlag("V", "version", "Returns the version")
 
@@ -128,6 +142,7 @@ func main() {
 	cmdline.SetOptionDefault("port", "49443")
 	cmdline.SetOptionDefault("username", "dslf-config")
 	cmdline.SetOptionDefault("method", "connection_status")
+	cmdline.SetOptionDefault("timeout", "90")
 
 	cmdline.Parse(os.Args)
 
@@ -140,8 +155,9 @@ func main() {
 		username := cmdline.OptionValue("username")
 		password := cmdline.OptionValue("password")
 		method := cmdline.OptionValue("method")
+		timeout := cmdline.OptionValue("timeout")
 
-		aI := createRequiredArgumentInformation(hostname, port, username, password, method)
+		aI := createRequiredArgumentInformation(hostname, port, username, password, method, timeout)
 
 		if cmdline.IsOptionSet("warning") {
 			aI.createWarningThreshold(cmdline.OptionValue("warning"))

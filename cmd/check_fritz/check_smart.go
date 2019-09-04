@@ -18,7 +18,7 @@ func CheckSpecificSmartStatus(aI ArgumentInformation) {
 	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewAIN", *aI.InputVariable))
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 
 	if err != nil {
 		fmt.Printf("UNKNOWN - %s\n", err)
@@ -61,7 +61,7 @@ func CheckSpecificSmartHeaterTemperatur(aI ArgumentInformation) {
 	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewAIN", *aI.InputVariable))
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 
 	if err != nil {
 		fmt.Printf("UNKNOWN - %s\n", err)
@@ -132,7 +132,7 @@ func CheckSpecificSmartSocketPower(aI ArgumentInformation) {
 	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewAIN", *aI.InputVariable))
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 
 	if err != nil {
 		fmt.Printf("UNKNOWN - %s\n", err)
@@ -197,7 +197,7 @@ func CheckSpecificSmartSocketEnergy(aI ArgumentInformation) {
 	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewAIN", *aI.InputVariable))
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 
 	if err != nil {
 		fmt.Printf("UNKNOWN - %s\n", err)
@@ -266,7 +266,7 @@ func CheckSmartStatus(aI ArgumentInformation) {
 	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewIndex", *aI.Index))
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 
 	if err != nil {
 		fmt.Printf("UNKNOWN - %s\n", err)
@@ -309,7 +309,7 @@ func CheckSmartHeaterTemperatur(aI ArgumentInformation) {
 	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewIndex", *aI.Index))
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 
 	if err != nil {
 		fmt.Printf("UNKNOWN - %s\n", err)
@@ -380,7 +380,7 @@ func CheckSmartSocketPower(aI ArgumentInformation) {
 	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewIndex", *aI.Index))
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 
 	if err != nil {
 		fmt.Printf("UNKNOWN - %s\n", err)
@@ -445,7 +445,7 @@ func CheckSmartSocketEnergy(aI ArgumentInformation) {
 	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewIndex", *aI.Index))
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
-	res, err := fritz.ProcessSoapResponse(resps, errs, 1)
+	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 
 	if err != nil {
 		fmt.Printf("UNKNOWN - %s\n", err)

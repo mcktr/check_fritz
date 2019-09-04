@@ -2,6 +2,7 @@ package fritz
 
 import (
 	"encoding/xml"
+	"fmt"
 	"time"
 )
 
@@ -176,7 +177,7 @@ func UnmarshalSoapResponse(resp TR064Response, inputXML [][]byte) error {
 }
 
 // ProcessSoapResponse handles the SOAP response from channels
-func ProcessSoapResponse(resps chan []byte, errs chan error, count int) ([][]byte, error) {
+func ProcessSoapResponse(resps chan []byte, errs chan error, count int, timeout int) ([][]byte, error) {
 	results := make([][]byte, 0)
 
 	for {
@@ -194,9 +195,8 @@ func ProcessSoapResponse(resps chan []byte, errs chan error, count int) ([][]byt
 			if count <= 0 {
 				break
 			}
-		case <-time.After(60 * time.Second):
-			// TODO: Timeout
-			panic("Timeout")
+		case <-time.After(time.Duration(timeout) * time.Second):
+			return nil, fmt.Errorf("Ran into a timeout after %d seconds", timeout)
 		}
 
 		if count <= 0 || timedout {
