@@ -113,6 +113,7 @@ object CheckCommand "fritz" {
 		"--critical" = "$fritz_critical$"
 		"--index" = "$fritz_index$"
 		"--ain" = "$fritz_ain$"
+		"--timeout" = "$fritz_timeout"
 	}
 
 	vars.fritz_hostname = "$address$"
