@@ -28,7 +28,6 @@ func CheckConnectionStatus(aI ArgumentInformation) {
 		GlobalReturnCode = exitUnknown
 		return
 	}
-
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
@@ -71,7 +70,20 @@ func CheckConnectionUptime(aI ArgumentInformation) {
 	resps := make(chan []byte)
 	errs := make(chan error)
 
-	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wanpppconn1", "WANPPPConnection", "GetInfo")
+	modelgroup := strings.ToLower(*aI.Modelgroup)
+
+	var soapReq fritz.SoapData
+
+	switch modelgroup {
+	case "dsl":
+		soapReq = fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wanpppconn1", "WANPPPConnection", "GetInfo")
+	case "cable":
+		soapReq = fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wanipconnection1", "WanIPConnection", "GetInfo")
+	default:
+		fmt.Printf("UNKNOWN - Fritz!Box modelgroup '%s' is unknown. Supported modelgroups are: DSL, CABLE\n", modelgroup)
+		GlobalReturnCode = exitUnknown
+		return
+	}
 	go fritz.DoSoapRequest(&soapReq, resps, errs)
 
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
