@@ -32,9 +32,10 @@ type ArgumentInformation struct {
 	Index         *string
 	InputVariable *string
 	Timeout       *int
+	Modelgroup    *string
 }
 
-func createRequiredArgumentInformation(hostname string, port string, username string, password string, method string, timeout string) ArgumentInformation {
+func createRequiredArgumentInformation(hostname string, port string, username string, password string, method string, timeout string, modelgroup string) ArgumentInformation {
 	var ai ArgumentInformation
 
 	ai.Hostname = &hostname
@@ -42,6 +43,7 @@ func createRequiredArgumentInformation(hostname string, port string, username st
 	ai.Username = &username
 	ai.Password = &password
 	ai.Method = &method
+	ai.Modelgroup = &modelgroup
 
 	ai.createTimeout(timeout)
 
@@ -135,6 +137,7 @@ func main() {
 	cmdline.AddOption("i", "index", "value", "DEPRECATED: Specifies the index.")
 	cmdline.AddOption("a", "ain", "value", "Specifies the AIN for smart devices.")
 	cmdline.AddOption("t", "timeout", "value", "Specifies the timeout for the request.")
+	cmdline.AddOption("M", "modelgroup", "value", "Specifies the Fritz!Box model group (DSL or Cable).")
 
 	cmdline.AddFlag("V", "version", "Returns the version")
 
@@ -143,6 +146,7 @@ func main() {
 	cmdline.SetOptionDefault("username", "dslf-config")
 	cmdline.SetOptionDefault("method", "connection_status")
 	cmdline.SetOptionDefault("timeout", "90")
+	cmdline.SetOptionDefault("modelgroup", "DSL")
 
 	cmdline.Parse(os.Args)
 
@@ -156,8 +160,9 @@ func main() {
 		password := cmdline.OptionValue("password")
 		method := cmdline.OptionValue("method")
 		timeout := cmdline.OptionValue("timeout")
+		modelgroup := cmdline.OptionValue("modelgroup")
 
-		aI := createRequiredArgumentInformation(hostname, port, username, password, method, timeout)
+		aI := createRequiredArgumentInformation(hostname, port, username, password, method, timeout, modelgroup)
 
 		if cmdline.IsOptionSet("warning") {
 			aI.createWarningThreshold(cmdline.OptionValue("warning"))
