@@ -37,7 +37,7 @@ func CheckConnectionStatus(aI ArgumentInformation) {
 		return
 	}
 
-	soapResp := fritz.WANPPPConnectionResponse{}
+	soapResp := fritz.WANConnectionInfoResponse{}
 	err = fritz.UnmarshalSoapResponse(&soapResp, res)
 
 	if err != nil {
@@ -93,7 +93,7 @@ func CheckConnectionUptime(aI ArgumentInformation) {
 		return
 	}
 
-	soapResp := fritz.WANPPPConnectionResponse{}
+	soapResp := fritz.WANConnectionInfoResponse{}
 	err = fritz.UnmarshalSoapResponse(&soapResp, res)
 
 	if err != nil {
