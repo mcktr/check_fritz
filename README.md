@@ -69,6 +69,7 @@ Ensure that you also set the executable bit with `chmod +x check_fritz`.
 | `-i`              | `--index`        | **DEPRECATED.** **Optional.** Defines a index value required by some check methods. Defaults to none. _Marked for removal in v1.2.0._ |
 | `-a`              | `--ain`          | **Optional.** Defines the AIN required by smart device check methods. Defaults to none.                                               |
 | `-t`              | `--timeout`      | **Optional.** Defines the timeout in seconds to wait for an answer from the Fritz!Box. Defaults to `90`.                              |
+| `-M`              | `--modelgroup`   | **Optional.** Defines the Fritz!Box model group. Supported model groups are `DSL` and `Cable`. Defaults to `DSL`.                     |
 
 > **Note:**
 >
@@ -113,7 +114,8 @@ object CheckCommand "fritz" {
 		"--critical" = "$fritz_critical$"
 		"--index" = "$fritz_index$"
 		"--ain" = "$fritz_ain$"
-		"--timeout" = "$fritz_timeout"
+		"--timeout" = "$fritz_timeout$"
+		"--modelgroup" = "$fritz_modelgroup$" 
 	}
 
 	vars.fritz_hostname = "$address$"
