@@ -10,8 +10,8 @@ import (
 type TR064Response interface {
 }
 
-// WANPPPConnectionResponse is the data structure for responses from WANPPPConnection
-type WANPPPConnectionResponse struct {
+// WANConnectionInfoResponse is the data structure for responses from WANPPPConnection
+type WANConnectionInfoResponse struct {
 	TR064Response
 	NewEnable                  string `xml:"Body>GetInfoResponse>NewEnable"`
 	NewConnectionStatus        string `xml:"Body>GetInfoResponse>NewConnectionStatus"`
