@@ -66,7 +66,6 @@ Ensure that you also set the executable bit with `chmod +x check_fritz`.
 | `-m`              | `--method`       | **Optional.** Defines the used check method. Defaults to `connection_status`.                                                         |
 | `-w`              | `--warning`      | **Optional.** Defines a warning threshold. Defaults to none.                                                                          |
 | `-c`              | `--critical`     | **Optional.** Defines a critical threshold. Defaults to none.                                                                         |
-| `-i`              | `--index`        | **DEPRECATED.** **Optional.** Defines a index value required by some check methods. Defaults to none. _Marked for removal in v1.2.0._ |
 | `-a`              | `--ain`          | **Optional.** Defines the AIN required by smart device check methods. Defaults to none.                                               |
 | `-t`              | `--timeout`      | **Optional.** Defines the timeout in seconds to wait for an answer from the Fritz!Box. Defaults to `90`.                              |
 | `-M`              | `--modelgroup`   | **Optional.** Defines the Fritz!Box model group. Supported model groups are `DSL` and `Cable`. Defaults to `DSL`.                     |
