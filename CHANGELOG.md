@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.1.0 (2019-09-18)
+
+- Please have a look into the [upgrading documentation](https://github.com/mcktr/check_fritz/blob/master/doc/upgrading.md).
+
+* [#65](https://github.com/mcktr/check_fritz/pull/65) (area/check/downstream, area/check/upstream, bug): Fix dividing by zero
+* [#64](https://github.com/mcktr/check_fritz/pull/64) (area/documentation): Introduce upgrading documentation
+* [#63](https://github.com/mcktr/check_fritz/pull/63) (area/documentation, core/quality): Add development documentation
+* [#62](https://github.com/mcktr/check_fritz/pull/62) (area/check/connection, enhancement): Implement support for Fritz!Box cable models
+* [#58](https://github.com/mcktr/check_fritz/pull/58) (area/cli, core/quality): Implement timeout parameter
+* [#60](https://github.com/mcktr/check_fritz/pull/60) (area/documentation, bug): Fix spelling in README
+* [#59](https://github.com/mcktr/check_fritz/pull/59) (area/cli, bug): Remove default values in help text output
+* [#57](https://github.com/mcktr/check_fritz/pull/57) (area/soap, bug, core/build-fix): Fix panic when Fritz!Box is unreachable
+* [#55](https://github.com/mcktr/check_fritz/pull/55) (area/check/downstream, area/check/upstream, enhancement): Implement method for up-/downstream utilization
+* [#54](https://github.com/mcktr/check_fritz/pull/54) (area/documentation): Adjust documentation for next release
+* [#51](https://github.com/mcktr/check_fritz/pull/51) (area/check/smart-device, bug): Fix smart device index handling
+* [#50](https://github.com/mcktr/check_fritz/pull/50) (core/quality, enhancement): Rewrite check plugin to use Goroutines
+* [#47](https://github.com/mcktr/check_fritz/pull/47) (core/quality): Use Go modules to handle dependencies
+* [#45](https://github.com/mcktr/check_fritz/pull/45) (enhancement): Implement check method for smart device status
+* [#44](https://github.com/mcktr/check_fritz/pull/44) (enhancement): Add external IP to status method
+* [#39](https://github.com/mcktr/check_fritz/pull/39) (bug): Fix CHANGELOG format
+
 ## 1.0 (2019-03-22)
 
 - This is the first stable version of check_fritz

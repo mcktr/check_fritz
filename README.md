@@ -126,3 +126,10 @@ object CheckCommand "fritz" {
 > This predefined CheckCommand object for Icinga 2 requires a global constants named `CustomPluginDir`.
 > You can define them in `constants.conf` in the root Icinga 2 configuration directory. For more information
 > please read the official Icinga 2 documentation about [global constants](https://icinga.com/docs/icinga2/latest/doc/04-configuring-icinga-2/#constants-conf).
+
+### Thanks
+
+Thanks to all contributors!
+
+* [fdellwing](https://github.com/fdellwing) for [suggesting the upstream_/downstream_usage functions](https://github.com/mcktr/check_fritz/issues/48)
+* [uclara](https://github.com/uclara) for [testing the support for Fritz!Box cable models](https://github.com/mcktr/check_fritz/issues/40)
