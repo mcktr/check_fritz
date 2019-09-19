@@ -168,6 +168,12 @@ func CheckUpstreamUsage(aI ArgumentInformation) {
 
 	upstreamCurrent = upstreamCurrent * 8 / 1000000
 	upstreamMax = upstreamMax * 8 / 1000000
+
+	if upstreamMax == 0 {
+		fmt.Printf("UNKNOWN - Maximum Downstream is 0\n")
+		return
+	}
+
 	upstreamUsage := 100 / upstreamMax * upstreamCurrent
 	perfData := perfdata.CreatePerformanceData("upstream_usage", upstreamUsage, "")
 
