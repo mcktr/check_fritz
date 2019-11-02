@@ -5,7 +5,7 @@ import (
 	"os"
 	"strconv"
 
-	cmdline "github.com/galdor/go-cmdline"
+	"github.com/urfave/cli"
 )
 
 // program version
@@ -122,93 +122,126 @@ func HandleError(err error) bool {
 }
 
 func main() {
-	cmdline := cmdline.New()
+	app := cli.NewApp()
 
-	cmdline.AddOption("H", "hostname", "value", "Specifies the hostname.")
-	cmdline.AddOption("P", "port", "value", "Specifies the SSL port.")
-	cmdline.AddOption("u", "username", "value", "Specifies the username.")
-	cmdline.AddOption("p", "password", "value", "Specifies the password.")
-	cmdline.AddOption("m", "method", "value", "Specifies the check method.")
-	cmdline.AddOption("w", "warning", "value", "Specifies the warning threshold.")
-	cmdline.AddOption("c", "critical", "value", "Specifies the critical threshold.")
-	cmdline.AddOption("a", "ain", "value", "Specifies the AIN for smart devices.")
-	cmdline.AddOption("t", "timeout", "value", "Specifies the timeout for the request.")
-	cmdline.AddOption("M", "modelgroup", "value", "Specifies the Fritz!Box model group (DSL or Cable).")
+	app.Flags = []cli.Flag{
+		cli.StringFlag{
+			Name:  "hostname, H",
+			Value: "fritz.box",
+			Usage: "Specifies the hostname.",
+		},
+		cli.StringFlag{
+			Name:  "port, P",
+			Value: "49443",
+			Usage: "Specifies the SSL port.",
+		},
+		cli.StringFlag{
+			Name:  "username, u",
+			Value: "dslf-config",
+			Usage: "Specifies the username.",
+		},
+		cli.StringFlag{
+			Name:  "password, p",
+			Usage: "Specifies the password.",
+		},
+		cli.StringFlag{
+			Name:  "method, m",
+			Value: "connection_status",
+			Usage: "Specifies the check method.",
+		},
+		cli.StringFlag{
+			Name:  "warning, w",
+			Usage: "Specifies the warning threshold.",
+		},
+		cli.StringFlag{
+			Name:  "critical, c",
+			Usage: "Specifies the critical threshold.",
+		},
+		cli.StringFlag{
+			Name:  "ain, a",
+			Usage: "Specifies the AIN for smart devices.",
+		},
+		cli.StringFlag{
+			Name:  "timeout, t",
+			Value: "90",
+			Usage: "Specifies the timeout for the request.",
+		},
+		cli.StringFlag{
+			Name:  "modelgroup, M",
+			Value: "DSL",
+			Usage: "Specifies the Fritz!Box model group (DSL or Cable).",
+		},
+	}
 
-	cmdline.AddFlag("V", "version", "Returns the version")
+	app.Action = func(c *cli.Context) error {
 
-	cmdline.SetOptionDefault("hostname", "fritz.box")
-	cmdline.SetOptionDefault("port", "49443")
-	cmdline.SetOptionDefault("username", "dslf-config")
-	cmdline.SetOptionDefault("method", "connection_status")
-	cmdline.SetOptionDefault("timeout", "90")
-	cmdline.SetOptionDefault("modelgroup", "DSL")
+		hostname := c.String("hostname")
+		port := c.String("port")
+		username := c.String("username")
+		password := c.String("password")
+		method := c.String("method")
+		timeout := c.String("timeout")
+		modelgroup := c.String("modelgroup")
 
-	cmdline.Parse(os.Args)
+		argInfo := createRequiredArgumentInformation(hostname, port, username, password, method, timeout, modelgroup)
 
-	if cmdline.IsOptionSet("version") {
-		printVersion()
-	} else {
-
-		hostname := cmdline.OptionValue("hostname")
-		port := cmdline.OptionValue("port")
-		username := cmdline.OptionValue("username")
-		password := cmdline.OptionValue("password")
-		method := cmdline.OptionValue("method")
-		timeout := cmdline.OptionValue("timeout")
-		modelgroup := cmdline.OptionValue("modelgroup")
-
-		aI := createRequiredArgumentInformation(hostname, port, username, password, method, timeout, modelgroup)
-
-		if cmdline.IsOptionSet("warning") {
-			aI.createWarningThreshold(cmdline.OptionValue("warning"))
+		if c.IsSet("warning") {
+			argInfo.createWarningThreshold(c.String("warning"))
 		}
 
-		if cmdline.IsOptionSet("critical") {
-			aI.createCriticalThreshold(cmdline.OptionValue("critical"))
+		if c.IsSet("critical") {
+			argInfo.createCriticalThreshold(c.String("critical"))
 		}
 
-		if cmdline.IsOptionSet("ain") {
-			aI.createInputVariable(cmdline.OptionValue("ain"))
+		if c.IsSet("ain") {
+			argInfo.createInputVariable(c.String("ain"))
 		}
 
-		if !checkRequiredFlags(&aI) {
+		if !checkRequiredFlags(&argInfo) {
 			os.Exit(exitUnknown)
 		}
 
-		switch *aI.Method {
+		switch *argInfo.Method {
 		case "connection_status":
-			CheckConnectionStatus(aI)
+			CheckConnectionStatus(argInfo)
 		case "connection_uptime":
-			CheckConnectionUptime(aI)
+			CheckConnectionUptime(argInfo)
 		case "device_uptime":
-			CheckDeviceUptime(aI)
+			CheckDeviceUptime(argInfo)
 		case "device_update":
-			CheckDeviceUpdate(aI)
+			CheckDeviceUpdate(argInfo)
 		case "downstream_max":
-			CheckDownstreamMax(aI)
+			CheckDownstreamMax(argInfo)
 		case "upstream_max":
-			CheckUpstreamMax(aI)
+			CheckUpstreamMax(argInfo)
 		case "downstream_current":
-			CheckDownstreamCurrent(aI)
+			CheckDownstreamCurrent(argInfo)
 		case "downstream_usage":
-			CheckDownstreamUsage(aI)
+			CheckDownstreamUsage(argInfo)
 		case "upstream_usage":
-			CheckUpstreamUsage(aI)
+			CheckUpstreamUsage(argInfo)
 		case "upstream_current":
-			CheckUpstreamCurrent(aI)
+			CheckUpstreamCurrent(argInfo)
 		case "smart_heatertemperatur":
-			CheckSpecificSmartHeaterTemperatur(aI)
+			CheckSpecificSmartHeaterTemperatur(argInfo)
 		case "smart_socketpower":
-			CheckSpecificSmartSocketPower(aI)
+			CheckSpecificSmartSocketPower(argInfo)
 		case "smart_socketenergy":
-			CheckSpecificSmartSocketEnergy(aI)
+			CheckSpecificSmartSocketEnergy(argInfo)
 		case "smart_status":
-			CheckSpecificSmartStatus(aI)
+			CheckSpecificSmartStatus(argInfo)
 		default:
 			fmt.Println("Unknown method.")
 			GlobalReturnCode = exitUnknown
 		}
+
+		return nil
 	}
+
+	err := app.Run(os.Args)
+	if err != nil {
+		panic(err)
+	}
+
 	os.Exit(GlobalReturnCode)
 }
