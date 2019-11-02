@@ -29,7 +29,6 @@ type ArgumentInformation struct {
 	Method        *string
 	Warning       *float64
 	Critical      *float64
-	Index         *string
 	InputVariable *string
 	Timeout       *int
 	Modelgroup    *string
@@ -69,10 +68,6 @@ func (ai *ArgumentInformation) createCriticalThreshold(critical string) {
 	}
 
 	ai.Critical = &crit
-}
-
-func (ai *ArgumentInformation) createIndex(index string) {
-	ai.Index = &index
 }
 
 func (ai *ArgumentInformation) createInputVariable(v string) {
@@ -134,7 +129,6 @@ func main() {
 	cmdline.AddOption("m", "method", "value", "Specifies the check method.")
 	cmdline.AddOption("w", "warning", "value", "Specifies the warning threshold.")
 	cmdline.AddOption("c", "critical", "value", "Specifies the critical threshold.")
-	cmdline.AddOption("i", "index", "value", "DEPRECATED: Specifies the index.")
 	cmdline.AddOption("a", "ain", "value", "Specifies the AIN for smart devices.")
 	cmdline.AddOption("t", "timeout", "value", "Specifies the timeout for the request.")
 	cmdline.AddOption("M", "modelgroup", "value", "Specifies the Fritz!Box model group (DSL or Cable).")
@@ -172,10 +166,6 @@ func main() {
 			aI.createCriticalThreshold(cmdline.OptionValue("critical"))
 		}
 
-		if cmdline.IsOptionSet("index") {
-			aI.createIndex(cmdline.OptionValue("index"))
-		}
-
 		if cmdline.IsOptionSet("ain") {
 			aI.createInputVariable(cmdline.OptionValue("ain"))
 		}
@@ -206,29 +196,13 @@ func main() {
 		case "upstream_current":
 			CheckUpstreamCurrent(aI)
 		case "smart_heatertemperatur":
-			if cmdline.IsOptionSet("index") {
-				CheckSmartHeaterTemperatur(aI)
-			} else {
-				CheckSpecificSmartHeaterTemperatur(aI)
-			}
+			CheckSpecificSmartHeaterTemperatur(aI)
 		case "smart_socketpower":
-			if cmdline.IsOptionSet("index") {
-				CheckSmartSocketPower(aI)
-			} else {
-				CheckSpecificSmartSocketPower(aI)
-			}
+			CheckSpecificSmartSocketPower(aI)
 		case "smart_socketenergy":
-			if cmdline.IsOptionSet("index") {
-				CheckSmartSocketEnergy(aI)
-			} else {
-				CheckSpecificSmartSocketEnergy(aI)
-			}
+			CheckSpecificSmartSocketEnergy(aI)
 		case "smart_status":
-			if cmdline.IsOptionSet("index") {
-				CheckSmartStatus(aI)
-			} else {
-				CheckSpecificSmartStatus(aI)
-			}
+			CheckSpecificSmartStatus(aI)
 		default:
 			fmt.Println("Unknown method.")
 			GlobalReturnCode = exitUnknown
