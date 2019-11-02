@@ -12,10 +12,12 @@ import (
 var version = "1.1.0"
 
 // internal exit codes
-var exitOk = 0
-var exitWarning = 1
-var exitCritical = 2
-var exitUnknown = 3
+const (
+	exitOk       = 0
+	exitWarning  = 1
+	exitCritical = 2
+	exitUnknown  = 3
+)
 
 // GlobalReturnCode holds always the last set return code
 var GlobalReturnCode = exitUnknown
