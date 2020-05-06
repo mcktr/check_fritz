@@ -8,7 +8,7 @@ import (
 )
 
 // program version
-var version = "1.1.0"
+const version = "1.1.0"
 
 // internal exit codes
 const (
@@ -181,9 +181,10 @@ func checkMain(c *cli.Context) error {
 
 func main() {
 	app := &cli.App{
-		Action: checkMain,
-		Name:   "check_fritz",
-		Usage:  "Check plugin to monitor a Fritz!Box",
+		Action:  checkMain,
+		Name:    "check_fritz",
+		Usage:   "Check plugin to monitor a Fritz!Box",
+		Version: version,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:        "hostname",
@@ -254,16 +255,33 @@ func main() {
 	{{.Name}} - {{.Usage}}
 
 USAGE:
-   check_fritz [global options...] 
+   check_fritz [options...]
 
-GLOBAL OPTIONS:
+OPTIONS:
 
 	{{range .VisibleFlags}}{{.}}
 	{{end}}
+
+METHODS:
+	connection_status       WAN connection status,
+	connection_uptime       WAN connection uptime (in seconds),
+	device_uptime           device uptime (in seconds),
+	device_update           update state,
+	downstream_max          maximum downstream,
+	upstream_max            maximum downstream,
+	downstream_current      current downstream,
+	upstream_current        current upstream,
+	downstream_usage        current downstream usage,
+	upstream_usage          current upstream usage,
+	smart_heattemperatur    current temperature of a a radiator thermostat (requires AIN),
+	smart_socketpower       current power consumption of a socket switch (requires AIN),
+	smart_status            current smart device status (requires AIN)
 `
 
-	err := app.Run(os.Args)
-	if err != nil {
-		panic(err)
+	cli.VersionFlag = &cli.BoolFlag{
+		Name: "version", Aliases: []string{"V"},
+		Usage: "print the version",
 	}
+
+	app.Run(os.Args)
 }
