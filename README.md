@@ -1,6 +1,6 @@
 # check_fritz
 
-![CI status](https://travis-ci.org/mcktr/check_fritz.svg?branch=master)
+![CI](https://github.com/mcktr/check_fritz/workflows/CI/badge.svg?branch=master)
 
 **Table of Contents**
 
