@@ -16,7 +16,7 @@ func CheckSpecificSmartStatus(aI ArgumentInformation) {
 
 	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetSpecificDeviceInfos")
 	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewAIN", *aI.InputVariable))
-	go fritz.DoSoapRequest(&soapReq, resps, errs)
+	go fritz.DoSoapRequest(&soapReq, resps, errs, aI.Debug)
 
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 
@@ -59,7 +59,7 @@ func CheckSpecificSmartHeaterTemperatur(aI ArgumentInformation) {
 
 	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetSpecificDeviceInfos")
 	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewAIN", *aI.InputVariable))
-	go fritz.DoSoapRequest(&soapReq, resps, errs)
+	go fritz.DoSoapRequest(&soapReq, resps, errs, aI.Debug)
 
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 
@@ -130,7 +130,7 @@ func CheckSpecificSmartSocketPower(aI ArgumentInformation) {
 
 	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetSpecificDeviceInfos")
 	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewAIN", *aI.InputVariable))
-	go fritz.DoSoapRequest(&soapReq, resps, errs)
+	go fritz.DoSoapRequest(&soapReq, resps, errs, aI.Debug)
 
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 
@@ -195,7 +195,7 @@ func CheckSpecificSmartSocketEnergy(aI ArgumentInformation) {
 
 	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetSpecificDeviceInfos")
 	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewAIN", *aI.InputVariable))
-	go fritz.DoSoapRequest(&soapReq, resps, errs)
+	go fritz.DoSoapRequest(&soapReq, resps, errs, aI.Debug)
 
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 

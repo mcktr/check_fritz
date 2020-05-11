@@ -28,7 +28,7 @@ func CheckConnectionStatus(aI ArgumentInformation) {
 		GlobalReturnCode = exitUnknown
 		return
 	}
-	go fritz.DoSoapRequest(&soapReq, resps, errs)
+	go fritz.DoSoapRequest(&soapReq, resps, errs, aI.Debug)
 
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 
@@ -84,7 +84,7 @@ func CheckConnectionUptime(aI ArgumentInformation) {
 		GlobalReturnCode = exitUnknown
 		return
 	}
-	go fritz.DoSoapRequest(&soapReq, resps, errs)
+	go fritz.DoSoapRequest(&soapReq, resps, errs, aI.Debug)
 
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 

@@ -33,6 +33,7 @@ type ArgumentInformation struct {
 	InputVariable *string
 	Timeout       *int
 	Modelgroup    *string
+	Debug         bool
 }
 
 func createRequiredArgumentInformation(hostname string, port string, username string, password string, method string, timeout int, modelgroup string) ArgumentInformation {
@@ -45,6 +46,7 @@ func createRequiredArgumentInformation(hostname string, port string, username st
 	ai.Method = &method
 	ai.Modelgroup = &modelgroup
 	ai.Timeout = &timeout
+	ai.Debug = false
 
 	return ai
 }
@@ -59,6 +61,10 @@ func (ai *ArgumentInformation) createCriticalThreshold(critical float64) {
 
 func (ai *ArgumentInformation) createInputVariable(v string) {
 	ai.InputVariable = &v
+}
+
+func (ai *ArgumentInformation) setDebugMode() {
+	ai.Debug = true
 }
 
 func printVersion() {
@@ -134,6 +140,10 @@ func checkMain(c *cli.Context) error {
 
 	if c.IsSet("ain") {
 		argInfo.createInputVariable(c.String("ain"))
+	}
+
+	if c.IsSet("debug") {
+		argInfo.setDebugMode()
 	}
 
 	if !checkRequiredFlags(&argInfo) {
@@ -246,6 +256,11 @@ func main() {
 				Name:    "critical",
 				Aliases: []string{"c"},
 				Usage:   "Specifies the critical threshold.",
+			},
+			&cli.BoolFlag{
+				Name:    "debug",
+				Aliases: []string{"d"},
+				Usage:   "Outputs debug information",
 			},
 		},
 	}
