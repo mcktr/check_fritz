@@ -10,7 +10,7 @@ import (
 )
 
 // DoSoapRequest does two request to authenticate and handle the SOAP request
-func DoSoapRequest(soapRequest *SoapData, resps chan<- []byte, errs chan<- error) {
+func DoSoapRequest(soapRequest *SoapData, resps chan<- []byte, errs chan<- error, debug bool) {
 	soapClient := createNewSoapClient()
 
 	// prepare first request
@@ -38,7 +38,9 @@ func DoSoapRequest(soapRequest *SoapData, resps chan<- []byte, errs chan<- error
 	resp.Body.Close()
 
 	// enable this for debug sessions
-	// fmt.Println(string(body))
+	if debug {
+		fmt.Printf("---\nFrist SOAP Response:\n---\n%v\n---\n", string(body))
+	}
 
 	// create immediately a new request with authentication
 	req, err = newSoapRequest(soapRequest)
@@ -92,7 +94,10 @@ func DoSoapRequest(soapRequest *SoapData, resps chan<- []byte, errs chan<- error
 	resp.Body.Close()
 
 	// enable this for debug sessions
-	// fmt.Println(string(body))
+
+	if debug {
+		fmt.Printf("---\nSecond SOAP Response:\n---\n%v\n---\n", string(body))
+	}
 
 	resps <- body
 }
