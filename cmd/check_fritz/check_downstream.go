@@ -12,27 +12,86 @@ import (
 
 // CheckDownstreamMax checks the maximum downstream that is available on this internet connection
 func CheckDownstreamMax(aI ArgumentInformation) {
+	// Start of the initial request to get the total number of sync groups; we always start with group id 0
 	resps := make(chan []byte)
 	errs := make(chan error)
 
-	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
-	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewSyncGroupIndex", "0"))
-	go fritz.DoSoapRequest(&soapReq, resps, errs, aI.Debug)
+	initialSoapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
+	initialSoapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewSyncGroupIndex", "0"))
+	go fritz.DoSoapRequest(&initialSoapReq, resps, errs, aI.Debug)
 
-	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
+	initialResponse, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
 
 	if err != nil {
 		fmt.Printf("UNKNOWN - %s\n", err)
 		return
 	}
 
-	soapResp := fritz.WANCommonInterfaceOnlineMonitorResponse{}
-	err = fritz.UnmarshalSoapResponse(&soapResp, res)
+	initialSoapResp := fritz.WANCommonInterfaceOnlineMonitorResponse{}
+	err = fritz.UnmarshalSoapResponse(&initialSoapResp, initialResponse)
 
-	downstream, err := strconv.ParseFloat(soapResp.NewMaxDS, 64)
-
+	// Query the total number of sync groups
+	totalSyncGroups, err := strconv.Atoi(initialSoapResp.NewTotalNumberSyncGroups)
 	if err != nil {
-		panic(err)
+		fmt.Printf("UNKOWN - %s\n", err)
+		return
+	}
+
+	foundSupportedSyncMode := false
+	foundSyncMode := make([]string, 0)
+	var finalSoapResponse *fritz.WANCommonInterfaceOnlineMonitorResponse
+
+	for currentSyncGroup := 0; currentSyncGroup < totalSyncGroups; currentSyncGroup++ {
+		soapResp := fritz.WANCommonInterfaceOnlineMonitorResponse{}
+
+		// We only need to perform additional queries when there are more than 1 sync groups
+		if totalSyncGroups > 1 {
+			// Start of additional query attempts (depending on how many sync groups are found)
+			responseChan := make(chan []byte)
+			errorChan := make(chan error)
+
+			soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
+			soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewSyncGroupIndex", strconv.Itoa(currentSyncGroup)))
+			go fritz.DoSoapRequest(&soapReq, responseChan, errorChan, aI.Debug)
+
+			resp, err := fritz.ProcessSoapResponse(responseChan, errorChan, 1, *aI.Timeout)
+			if err != nil {
+				fmt.Printf("UNKNOWN - %s\n", err)
+				return
+			}
+
+			err = fritz.UnmarshalSoapResponse(&soapResp, resp)
+			if err != nil {
+				fmt.Printf("UNKNOWN - %s\n", err)
+				return
+			}
+		} else {
+			soapResp = initialSoapResp
+		}
+
+		syncGroupMode := soapResp.NewSyncGroupMode
+		foundSyncMode = append(foundSyncMode, syncGroupMode)
+
+		// Search for supported sync groups
+		if syncGroupMode == "VDSL" || syncGroupMode == "CABLE" {
+			foundSupportedSyncMode = true
+			finalSoapResponse = &soapResp
+
+			break
+		}
+	}
+
+	var downstream float64
+
+	if foundSupportedSyncMode {
+		downstream, err = strconv.ParseFloat(finalSoapResponse.NewMaxDS, 64)
+		if err != nil {
+			fmt.Printf("UNKNOWN - %s\n", err)
+			return
+		}
+	} else {
+		fmt.Printf("UNKNOWN - Could not find a supported SyncGroup (VDSL or CABLE); found the following: %s\n", strings.Join(foundSyncMode, ", "))
+		return
 	}
 
 	downstream = downstream * 8 / 1000000
