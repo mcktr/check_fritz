@@ -21,6 +21,14 @@ const (
 // GlobalReturnCode holds always the last set return code
 var GlobalReturnCode = exitUnknown
 
+// Collection of the supported sync group modes for the downstream_max and upstream_max methods
+var supportedSyncGroupModes = []string{
+	"DSL",
+	"VDSL",
+	"CABLE",
+	"IP-Client",
+}
+
 // ArgumentInformation is the data structure for the passed arguments
 type ArgumentInformation struct {
 	Hostname      *string

@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/mcktr/check_fritz/modules/fritzutil"
+
 	"github.com/mcktr/check_fritz/modules/fritz"
 	"github.com/mcktr/check_fritz/modules/perfdata"
 	"github.com/mcktr/check_fritz/modules/thresholds"
@@ -73,7 +75,7 @@ func CheckUpstreamMax(aI ArgumentInformation) {
 		foundSyncMode = append(foundSyncMode, syncGroupMode)
 
 		// Search for supported sync groups
-		if syncGroupMode == "VDSL" || syncGroupMode == "CABLE" {
+		if fritzutil.Contains(supportedSyncGroupModes, syncGroupMode) {
 			foundSupportedSyncMode = true
 			finalSoapResponse = &soapResp
 
@@ -90,7 +92,7 @@ func CheckUpstreamMax(aI ArgumentInformation) {
 			return
 		}
 	} else {
-		fmt.Printf("UNKNOWN - Could not find a supported SyncGroup (VDSL or CABLE); found the following: %s\n", strings.Join(foundSyncMode, ", "))
+		fmt.Printf("UNKNOWN - Could not find a supported SyncGroup (%s); found the following: %s\n", strings.Join(supportedSyncGroupModes, ", "), strings.Join(foundSyncMode, ", "))
 		return
 	}
 
