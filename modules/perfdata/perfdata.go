@@ -50,3 +50,13 @@ func (pd *PerformanceData) SetMaximum(Maximum float64) {
 func (pd *PerformanceData) GetPerformanceDataAsString() string {
 	return fmt.Sprintf("| '%s'=%f%s;%s;%s;%s;%s", pd.Label, pd.Value, pd.UOM, pd.Warning, pd.Critical, pd.Minimum, pd.Maximum)
 }
+
+func FormatAsString(pds []PerformanceData) string {
+	output := " |"
+
+	for _, pd := range pds {
+		output += fmt.Sprintf(" '%s'=%f%s;%s;%s;%s;%s", pd.Label, pd.Value, pd.UOM, pd.Warning, pd.Critical, pd.Minimum, pd.Maximum)
+	}
+
+	return output
+}
