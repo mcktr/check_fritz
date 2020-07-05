@@ -53,6 +53,11 @@ recommended to rename the binary package to `check_fritz`, since the suffix is o
 
 Ensure that you also set the executable bit with `chmod +x check_fritz`.
 
+> **Note**
+>
+> If you use SELinux and the binary is copied from a home directory to the plugin directory, you must reset the context
+> of it with `restorecon -v /your/path/to/binary/check_fritz`.
+
 ## Usage
 
 ### Parameter
