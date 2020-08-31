@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/urfave/cli/v2"
 )
@@ -23,17 +24,18 @@ var GlobalReturnCode = exitUnknown
 
 // ArgumentInformation is the data structure for the passed arguments
 type ArgumentInformation struct {
-	Hostname      *string
-	Port          *string
-	Username      *string
-	Password      *string
-	Method        *string
-	Warning       *float64
-	Critical      *float64
-	InputVariable *string
-	Timeout       *int
-	Modelgroup    *string
-	Debug         bool
+	Hostname            *string
+	Port                *string
+	Username            *string
+	Password            *string
+	Method              *string
+	Warning             *float64
+	Critical            *float64
+	InputVariable       *string
+	Timeout             *int
+	Modelgroup          *string
+	Debug               bool
+	SyncGroupIgnoreList *[]string
 }
 
 func createRequiredArgumentInformation(hostname string, port string, username string, password string, method string, timeout int, modelgroup string) ArgumentInformation {
@@ -65,6 +67,29 @@ func (ai *ArgumentInformation) createInputVariable(v string) {
 
 func (ai *ArgumentInformation) setDebugMode() {
 	ai.Debug = true
+}
+
+func (ai *ArgumentInformation) setSyncGroupIgnoreList(l string) {
+	var ignoreList []string
+
+	if strings.Contains(l, ",") {
+		ignoreList = strings.Split(l, ",")
+
+	} else {
+		ignoreList = append(ignoreList, l)
+	}
+
+	ai.SyncGroupIgnoreList = &ignoreList
+}
+
+func isInIgnoreList(list *[]string, value string) bool {
+	for _, v := range *list {
+		if strings.ToLower(value) == strings.ToLower(v) {
+			return true
+		}
+	}
+
+	return false
 }
 
 func printVersion() {
@@ -144,6 +169,10 @@ func checkMain(c *cli.Context) error {
 
 	if c.IsSet("debug") {
 		argInfo.setDebugMode()
+	}
+
+	if c.IsSet("ignoresyncgroups") {
+		argInfo.setSyncGroupIgnoreList(c.String("ignoresyncgroups"))
 	}
 
 	if !checkRequiredFlags(&argInfo) {
@@ -261,6 +290,10 @@ func main() {
 				Name:    "debug",
 				Aliases: []string{"d"},
 				Usage:   "Outputs debug information",
+			},
+			&cli.StringFlag{
+				Name:  "ignoresyncgroups",
+				Usage: "Set a ignore list for SyncGroups (separate multiple values by comma (,))",
 			},
 		},
 	}

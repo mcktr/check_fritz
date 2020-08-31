@@ -76,6 +76,20 @@ func CheckDownstreamMax(aI ArgumentInformation) {
 	GlobalReturnCode = exitOk
 
 	for _, r := range soapResponses {
+		if totalNumberSyncGroups > 1 {
+			if isInIgnoreList(aI.SyncGroupIgnoreList, r.NewSyncGroupName) {
+				if aI.Debug {
+					fmt.Printf("Ignoring sync group '%s' since it is in the ignore list\n", r.NewSyncGroupName)
+				}
+
+				continue
+			}
+		} else {
+			if aI.Debug {
+				fmt.Printf("The total number of sync groups is > 1, there is noting to ignore\n")
+			}
+		}
+
 		downstream, err := strconv.ParseFloat(r.NewMaxDS, 64)
 		if err != nil {
 			fmt.Printf("UNKNOWN - %s\n", err)
