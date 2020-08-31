@@ -57,18 +57,20 @@ Ensure that you also set the executable bit with `chmod +x check_fritz`.
 
 ### Parameter
 
-| Parameter (short) | Parameter (long) | Description                                                                                                                           |
-|-------------------|------------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| `-H`              | `--hostname`     | **Optional.** IP-Address or Hostname of the Fritz!Box. Defaults to `fritz.box`.                                                       |
-| `-P`              | `--port`         | **Optional.** Port for TR-064 over SSL. Defaults to `49443`.                                                                          |
-| `-u`              | `--username`     | **Optional.** Fritz!Box web interface Username for authentication. Defaults to `dslf-config`.                                         |
-| `-p`              | `--password`     | **Required.** Fritz!Box web interface Password for authentication.                                                                    |
-| `-m`              | `--method`       | **Optional.** Defines the used check method. Defaults to `connection_status`.                                                         |
-| `-w`              | `--warning`      | **Optional.** Defines a warning threshold. Defaults to none.                                                                          |
-| `-c`              | `--critical`     | **Optional.** Defines a critical threshold. Defaults to none.                                                                         |
-| `-a`              | `--ain`          | **Optional.** Defines the AIN required by smart device check methods. Defaults to none.                                               |
-| `-t`              | `--timeout`      | **Optional.** Defines the timeout in seconds to wait for an answer from the Fritz!Box. Defaults to `90`.                              |
-| `-M`              | `--modelgroup`   | **Optional.** Defines the Fritz!Box model group. Supported model groups are `DSL` and `Cable`. Defaults to `DSL`.                     |
+| Parameter (short) | Parameter (long)     | Description                                                                                                       |
+| ----------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `-H`              | `--hostname`         | **Optional.** IP-Address or Hostname of the Fritz!Box. Defaults to `fritz.box`.                                   |
+| `-P`              | `--port`             | **Optional.** Port for TR-064 over SSL. Defaults to `49443`.                                                      |
+| `-u`              | `--username`         | **Optional.** Fritz!Box web interface Username for authentication. Defaults to `dslf-config`.                     |
+| `-p`              | `--password`         | **Required.** Fritz!Box web interface Password for authentication.                                                |
+| `-m`              | `--method`           | **Optional.** Defines the used check method. Defaults to `connection_status`.                                     |
+| `-w`              | `--warning`          | **Optional.** Defines a warning threshold. Defaults to none.                                                      |
+| `-c`              | `--critical`         | **Optional.** Defines a critical threshold. Defaults to none.                                                     |
+| `-a`              | `--ain`              | **Optional.** Defines the AIN required by smart device check methods. Defaults to none.                           |
+| `-t`              | `--timeout`          | **Optional.** Defines the timeout in seconds to wait for an answer from the Fritz!Box. Defaults to `90`.          |
+| `-M`              | `--modelgroup`       | **Optional.** Defines the Fritz!Box model group. Supported model groups are `DSL` and `Cable`. Defaults to `DSL`. |
+|                   | `--ignoresyncgroups` | **Optional.** Set a ignore list for SyncGroups (separate multiple values by comma (,).                            |
+| `-d`              | `--debug`            | **Optional.** Enable debug output.                                                                                |
 
 > **Note:**
 >
@@ -78,7 +80,7 @@ Ensure that you also set the executable bit with `chmod +x check_fritz`.
 ### Methods
 
 | Name                     | Description                                                                 |
-|--------------------------|-----------------------------------------------------------------------------|
+| ------------------------ | --------------------------------------------------------------------------- |
 | `connection_status`      | WAN connection status.                                                      |
 | `connection_uptime`      | WAN connection uptime in seconds.                                           |
 | `device_uptime`          | Device uptime in seconds.                                                   |
