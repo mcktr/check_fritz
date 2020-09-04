@@ -288,7 +288,7 @@ METHODS:
 	upstream_current        current upstream,
 	downstream_usage        current downstream usage,
 	upstream_usage          current upstream usage,
-	smart_heattemperatur    current temperature of a a radiator thermostat (requires AIN),
+	smart_heatertemperatur    current temperature of a a radiator thermostat (requires AIN),
 	smart_socketpower       current power consumption of a socket switch (requires AIN),
 	smart_status            current smart device status (requires AIN)
 `
