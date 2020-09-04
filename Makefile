@@ -1,4 +1,4 @@
-VERSION := $(shell git describe --tags)
+VERSION := $(shell git describe --tags --always)
 BUILD := go build -v -ldflags "-s -w -X main.Version=$(VERSION)"
 
 BINARY = check_fritz
