@@ -15,6 +15,12 @@ func CheckSpecificSmartStatus(aI ArgumentInformation) {
 	errs := make(chan error)
 
 	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetSpecificDeviceInfos")
+
+	if aI.InputVariable == nil {
+		fmt.Printf("UNKNOWN - a AIN needs to be set for this check method\n")
+		return
+	}
+
 	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewAIN", *aI.InputVariable))
 	go fritz.DoSoapRequest(&soapReq, resps, errs, aI.Debug)
 
@@ -58,6 +64,12 @@ func CheckSpecificSmartHeaterTemperatur(aI ArgumentInformation) {
 	errs := make(chan error)
 
 	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetSpecificDeviceInfos")
+
+	if aI.InputVariable == nil {
+		fmt.Printf("UNKNOWN - a AIN needs to be set for this check method\n")
+		return
+	}
+
 	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewAIN", *aI.InputVariable))
 	go fritz.DoSoapRequest(&soapReq, resps, errs, aI.Debug)
 
@@ -129,6 +141,12 @@ func CheckSpecificSmartSocketPower(aI ArgumentInformation) {
 	errs := make(chan error)
 
 	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetSpecificDeviceInfos")
+
+	if aI.InputVariable == nil {
+		fmt.Printf("UNKNOWN - a AIN needs to be set for this check method\n")
+		return
+	}
+
 	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewAIN", *aI.InputVariable))
 	go fritz.DoSoapRequest(&soapReq, resps, errs, aI.Debug)
 
@@ -194,6 +212,12 @@ func CheckSpecificSmartSocketEnergy(aI ArgumentInformation) {
 	errs := make(chan error)
 
 	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/x_homeauto", "X_AVM-DE_Homeauto", "GetSpecificDeviceInfos")
+
+	if aI.InputVariable == nil {
+		fmt.Printf("UNKNOWN - a AIN needs to be set for this check method\n")
+		return
+	}
+
 	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewAIN", *aI.InputVariable))
 	go fritz.DoSoapRequest(&soapReq, resps, errs, aI.Debug)
 
