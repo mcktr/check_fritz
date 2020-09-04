@@ -1,5 +1,12 @@
 # Upgrading
 
+## Upgrading to v1.2.0
+
+### Index parameter
+
+The parameter `-i` (`--index`) got removed with the release of v1.2.0. Use the successor `-a` (`--ain`) instead, please
+read the upgrading to v1.1.0 for details on how to optain the AIN from the Fritz!Box web interface.
+
 ## Upgrading to v1.1.0
 
 ### Index parameter
