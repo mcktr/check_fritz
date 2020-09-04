@@ -8,7 +8,7 @@ import (
 )
 
 // program version
-const version = "1.1.0"
+var Version = "1.1.0"
 
 // internal exit codes
 const (
@@ -68,7 +68,7 @@ func (ai *ArgumentInformation) setDebugMode() {
 }
 
 func printVersion() {
-	fmt.Println("check_fritz v" + version)
+	fmt.Println("check_fritz v" + Version)
 	GlobalReturnCode = exitOk
 }
 
@@ -194,7 +194,7 @@ func main() {
 		Action:  checkMain,
 		Name:    "check_fritz",
 		Usage:   "Check plugin to monitor a Fritz!Box",
-		Version: version,
+		Version: Version,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:        "hostname",
