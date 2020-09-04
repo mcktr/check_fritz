@@ -29,24 +29,18 @@ threshold for a check function.
 
 ## Building
 
-The `Makefile` contains various build definitions for Linux, Windows and MacOS. The default target is `all` which will 
-generate a binary for every defined platform. Available targets are:
+The `Makefile` contains the target `build` which will build binaries for the following plattforms. The target will create 
+a subdirectory called `build`, the binaries will be created there. The `build` target also creats sha256 checksums for 
+every binary.
 
-| Target                | Descriptions                            |
-|-----------------------|-----------------------------------------|
-| `all`                 | Builds for all defined platforms.       |
-| `build.linux`         | Builds for all Linux based platforms.   |
-| `build.windows`       | Builds for all Windows based platforms. |
-| `build.darwin`        | Builds for all Darwin based platforms.  |
-| `build.linux.amd64`   | Builds for Linux amd64 architecture.    |
-| `build.linux.arm64`   | Builds for Linux arm64 architecture.    |
-| `build.linux.arm5`    | Builds for Linux arm5 architecture.     |
-| `build.linux.arm6`    | Builds for Linux arm6 architecture.     |
-| `build.linux.arm7`    | Builds for Linux arm7 architecture.     |
-| `build.windows.amd64` | Builds for Windows amd64 architecture.  |
-| `build.darwin.amd64`  | Builds for Darwin amd64 architecture.   |
+* linux/amd64
+* linux/arm64
+* linux/arm
+* windows/amd64
+* darwin/amd64
 
-The binary will be generated with the following naming convention: `check_fritz.$OS.$ARCH`. After the build is finished
-a sha256 checksum will be generated for every binary. 
+The default target `all` will first remove the `build` subdirectory if present, the second step is to build the binaries,
+the third and last step will run `go test` on the project directory. Currently there are not that many tests, this will
+improved with further development.
 
-The Makefile script is also used for release builds using TravisCI.
+The `Makefile` is also used in our CI using [GitHub Actions](https://github.com/mcktr/check_fritz/actions).
