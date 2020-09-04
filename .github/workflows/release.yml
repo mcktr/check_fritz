@@ -1,0 +1,39 @@
+name: Build Release
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.15
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Resolve Dependencies
+        run: go get -v -t -d ./...
+
+      - name: Go Test
+        run: make test
+
+      - name: Go Build
+        run: make build
+
+      - name: Create Release Draft
+        run: |
+          set -x
+          assets=()
+          for asset in ./build/*; do
+            assets+=("--attach" "$asset")
+          done
+          tag_name="${GITHUB_REF##*/}"
+          hub release create "${assets[@]}" --draft -m "$tag_name" "$tag_name"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
