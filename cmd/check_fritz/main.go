@@ -83,6 +83,10 @@ func (ai *ArgumentInformation) setSyncGroupIgnoreList(l string) {
 }
 
 func isInIgnoreList(list *[]string, value string) bool {
+	if list == nil {
+		return false
+	}
+
 	for _, v := range *list {
 		if strings.ToLower(value) == strings.ToLower(v) {
 			return true
