@@ -7,6 +7,25 @@
 The parameter `-i` (`--index`) got removed with the release of v1.2.0. Use the successor `-a` (`--ain`) instead, please
 read the upgrading to v1.1.0 for details on how to optain the AIN from the Fritz!Box web interface.
 
+### Downstream and Upstream calculation
+
+A bug was discovered that makes it necessary to provide the `--modelgroup` (short `-M`) parameter to the following 
+functions, if you use a non DSL Fritz!Box e.g. a Fritz!Box 6591 Cable.
+
+* `downstream_max`
+* `downstream_usage`
+* `upstream_max`
+* `upstream_usage`
+
+_Example:_
+
+```
+$ ./check_fritz --password secret --method downstream_usage --modelgroup cable
+```
+
+If you are using a DSL Fritz!Box e.g. a Fritz!Box 7490 you don't need to provide the `--modelgroup` parameter because
+the default will use `DSL` as modelgroup.
+
 ## Upgrading to v1.1.0
 
 ### Index parameter
