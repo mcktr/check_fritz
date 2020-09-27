@@ -15,8 +15,20 @@ func CheckDownstreamMax(aI ArgumentInformation) {
 	resps := make(chan []byte)
 	errs := make(chan error)
 
-	soapReq := fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "X_AVM-DE_GetOnlineMonitor")
-	soapReq.AddSoapDataVariable(fritz.CreateNewSoapVariable("NewSyncGroupIndex", "0"))
+	var soapReq fritz.SoapData
+
+	isDSL := false
+
+	if strings.ToLower(*aI.Modelgroup) == "dsl" {
+		isDSL = true
+	}
+
+	if isDSL {
+		soapReq = fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wandslifconfig1", "WANDSLInterfaceConfig", "GetInfo")
+	} else {
+		soapReq = fritz.CreateNewSoapData(*aI.Username, *aI.Password, *aI.Hostname, *aI.Port, "/upnp/control/wancommonifconfig1", "WANCommonInterfaceConfig", "GetCommonLinkProperties")
+	}
+
 	go fritz.DoSoapRequest(&soapReq, resps, errs, aI.Debug)
 
 	res, err := fritz.ProcessSoapResponse(resps, errs, 1, *aI.Timeout)
@@ -26,16 +38,40 @@ func CheckDownstreamMax(aI ArgumentInformation) {
 		return
 	}
 
-	soapResp := fritz.WANCommonInterfaceOnlineMonitorResponse{}
-	err = fritz.UnmarshalSoapResponse(&soapResp, res)
+	var downstream float64
 
-	downstream, err := strconv.ParseFloat(soapResp.NewMaxDS, 64)
+	if isDSL {
+		soapResp := fritz.WANDSLInterfaceGetInfoResponse{}
+		err = fritz.UnmarshalSoapResponse(&soapResp, res)
 
-	if err != nil {
-		panic(err)
+		if err != nil {
+			panic(err)
+		}
+
+		ups, err := strconv.ParseFloat(soapResp.NewDownstreamCurrRate, 64)
+
+		if err != nil {
+			panic(err)
+		}
+
+		downstream = ups / 1000
+	} else {
+		soapResp := fritz.WANCommonInterfaceCommonLinkPropertiesResponse{}
+		err = fritz.UnmarshalSoapResponse(&soapResp, res)
+
+		if err != nil {
+			panic(err)
+		}
+
+		ups, err := strconv.ParseFloat(soapResp.NewLayer1DownstreamMaxBitRate, 64)
+
+		if err != nil {
+			panic(err)
+		}
+
+		downstream = ups / 1000000
 	}
 
-	downstream = downstream * 8 / 1000000
 	perfData := perfdata.CreatePerformanceData("downstream_max", downstream, "")
 
 	GlobalReturnCode = exitOk

@@ -163,6 +163,35 @@ type SmartSpecificDeviceInfoResponse struct {
 	NewHkrComfortTemperature  string `xml:"Body>GetSpecificDeviceInfosResponse>NewHkrComfortTemperature"`
 }
 
+// WANCommonInterfaceCommonLinkPropertiesResponse is the date structure for responses from GetCommonLinkProperties
+type WANCommonInterfaceCommonLinkPropertiesResponse struct {
+	TR064Response
+	NewWANAccessType              string `xml:"Body>GetCommonLinkPropertiesResponse>GetCommonLinkPropertiesResponse"`
+	NewLayer1UpstreamMaxBitRate   string `xml:"Body>GetCommonLinkPropertiesResponse>NewLayer1UpstreamMaxBitRate"`
+	NewLayer1DownstreamMaxBitRate string `xml:"Body>GetCommonLinkPropertiesResponse>NewLayer1DownstreamMaxBitRate"`
+	NewPhysicalLinkStatus         string `xml:"Body>GetCommonLinkPropertiesResponse>NewPhysicalLinkStatus"`
+}
+
+// WANDSLInterfaceGetInfoResponse is the date structure for responses from GetInfo
+type WANDSLInterfaceGetInfoResponse struct {
+	TR064Response
+	NewEnable                string `xml:"Body>GetInfoResponse>NewEnable"`
+	NewStatus                string `xml:"Body>GetInfoResponse>NewStatus"`
+	NewDataPath              string `xml:"Body>GetInfoResponse>NewDataPath"`
+	NewUpstreamCurrRate      string `xml:"Body>GetInfoResponse>NewUpstreamCurrRate"`
+	NewDownstreamCurrRate    string `xml:"Body>GetInfoResponse>NewDownstreamCurrRate"`
+	NewUpstreamMaxRate       string `xml:"Body>GetInfoResponse>NewUpstreamMaxRate"`
+	NewDownstreamMaxRate     string `xml:"Body>GetInfoResponse>NewDownstreamMaxRate"`
+	NewUpstreamNoiseMargin   string `xml:"Body>GetInfoResponse>NewUpstreamNoiseMargin"`
+	NewDownstreamNoiseMargin string `xml:"Body>GetInfoResponse>NewDownstreamNoiseMargin"`
+	NewUpstreamAttenuation   string `xml:"Body>GetInfoResponse>NewUpstreamAttenuation"`
+	NewDownstreamAttenuation string `xml:"Body>GetInfoResponse>NewDownstreamAttenuation"`
+	NewATURVendor            string `xml:"Body>GetInfoResponse>NewATURVendor"`
+	NewATURCountry           string `xml:"Body>GetInfoResponse>NewATURCountry"`
+	NewUpstreamPower         string `xml:"Body>GetInfoResponse>NewUpstreamPower"`
+	NewDownstreamPower       string `xml:"Body>GetInfoResponse>NewDownstreamPower"`
+}
+
 // UnmarshalSoapResponse unmarshals the soap response to the data structure
 func UnmarshalSoapResponse(resp TR064Response, inputXML [][]byte) error {
 	for i := range inputXML {
