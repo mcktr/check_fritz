@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.2.0 (2020-10-09)
+
+- Please have a look into the [upgrading documentation](https://github.com/mcktr/check_fritz/blob/master/doc/upgrading.md).
+
+* [#99](https://github.com/mcktr/check_fritz/pull/99) (area/cli, bug): Add missing smart_socketenergy entry to help page
+* [#98](https://github.com/mcktr/check_fritz/pull/98) (area/cli, bug): Fix --modelgroup parameter alias not working
+* [#97](https://github.com/mcktr/check_fritz/pull/97) (bug, area/check/downstream, area/check/upstream): Fix wrong values for max down-/upstream
+* [#95](https://github.com/mcktr/check_fritz/pull/95) (area/documentation): Update contributing documentation
+* [#92](https://github.com/mcktr/check_fritz/pull/92) (area/documentation): Add upgrading documentation for v1.2.0
+* [#91](https://github.com/mcktr/check_fritz/pull/91) (area/check/smart-device, bug): Fix nil pointer dereference in smart check methods
+* [#90](https://github.com/mcktr/check_fritz/pull/90) (area/cli, bug): Fix typo in help output
+* [#87](https://github.com/mcktr/check_fritz/pull/87) (core/quality, enhancement): Enhance the build process
+* [#85](https://github.com/mcktr/check_fritz/pull/85) (core/quality, area/documentation): Add note for SELinux context
+* [#81](https://github.com/mcktr/check_fritz/pull/81) (core/quality, enhancement): Add CI artifacts upload
+* [#80](https://github.com/mcktr/check_fritz/pull/80) (core/quality, enhancement): Add debug mode parameter
+* [#76](https://github.com/mcktr/check_fritz/pull/76) (core/quality, enhancement): Replace cmdline package with cli (v2) package
+* [#70](https://github.com/mcktr/check_fritz/pull/70) (core/quality): Make internal exit code variables to constants
+* [#69](https://github.com/mcktr/check_fritz/pull/69) (core/quality): Remove deprecated smart device functions
+
 ## 1.1.0 (2019-09-18)
 
 - Please have a look into the [upgrading documentation](https://github.com/mcktr/check_fritz/blob/master/doc/upgrading.md).
