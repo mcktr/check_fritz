@@ -79,11 +79,17 @@ func CheckDeviceUpdate(aI ArgumentInformation) {
 
 	GlobalReturnCode = exitOk
 
+	output := ""
+
 	if state == 0 {
-		fmt.Print("OK - No update available\n")
+		output = fmt.Sprint("OK - No update available")
 	} else {
 		GlobalReturnCode = exitCritical
 
-		fmt.Print("CRITICAL - Update available\n")
+		output = fmt.Sprint("CRITICAL - Update available")
 	}
+
+	perfData := perfdata.CreatePerformanceData("pending_update", float64(state), "")
+
+	fmt.Printf("%s %s\n", output, perfData.GetPerformanceDataAsString())
 }
