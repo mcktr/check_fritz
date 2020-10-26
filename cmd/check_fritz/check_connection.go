@@ -44,25 +44,29 @@ func CheckConnectionStatus(aI ArgumentInformation) {
 		panic(err)
 	}
 
+	output := ""
+
 	if soapResp.NewConnectionStatus == "Connected" {
-		fmt.Print("OK - Connection Status: " + soapResp.NewConnectionStatus)
+		output = fmt.Sprintf("OK - Connection Status: " + soapResp.NewConnectionStatus)
 
 		if soapResp.NewExternalIPAddress != "" {
-			fmt.Print("; External IP: " + soapResp.NewExternalIPAddress)
+			output += "; External IP: " + soapResp.NewExternalIPAddress
 		}
-
-		fmt.Print("\n")
 
 		GlobalReturnCode = exitOk
 	} else if soapResp.NewConnectionStatus == "" {
-		fmt.Print("UNKNOWN - Connection Status is empty\n")
+		output = fmt.Sprint("UNKNOWN - Connection Status is empty")
 
 		GlobalReturnCode = exitUnknown
 	} else {
-		fmt.Print("CRITICAL - Connection Status: " + soapResp.NewConnectionStatus + "\n")
+		output = fmt.Sprintf("CRITICAL - Connection Status: " + soapResp.NewConnectionStatus)
 
 		GlobalReturnCode = exitCritical
 	}
+
+	perfData := perfdata.CreatePerformanceData("status", float64(GlobalReturnCode), "")
+
+	fmt.Printf("%s %s\n", output, perfData.GetPerformanceDataAsString())
 }
 
 // CheckConnectionUptime checks the uptime of the internet connection
