@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.1 (2020-11-07)
+
+- Bugfix release
+
+* [#104](https://github.com/mcktr/check_fritz/pull/104) (area/check/connection, area/performance-data): Fix connection_status performance data output 
+* [#103](https://github.com/mcktr/check_fritz/pull/103) (area/check/connection, area/performance-data, bug): Missing performance data output in connection_status & device_update methods
+
 ## 1.2.0 (2020-10-09)
 
 - Please have a look into the [upgrading documentation](https://github.com/mcktr/check_fritz/blob/master/doc/upgrading.md).
