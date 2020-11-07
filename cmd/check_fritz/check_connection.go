@@ -47,10 +47,10 @@ func CheckConnectionStatus(aI ArgumentInformation) {
 	output := ""
 
 	if soapResp.NewConnectionStatus == "Connected" {
-		output = fmt.Sprintf("OK - Connection Status: " + soapResp.NewConnectionStatus)
+		output = fmt.Sprintf("OK - Connection Status: %s", soapResp.NewConnectionStatus)
 
 		if soapResp.NewExternalIPAddress != "" {
-			output += "; External IP: " + soapResp.NewExternalIPAddress
+			output += fmt.Sprintf("; External IP: %s", soapResp.NewExternalIPAddress)
 		}
 
 		GlobalReturnCode = exitOk
@@ -58,8 +58,12 @@ func CheckConnectionStatus(aI ArgumentInformation) {
 		output = fmt.Sprint("UNKNOWN - Connection Status is empty")
 
 		GlobalReturnCode = exitUnknown
+	} else if soapResp.NewConnectionStatus == "Connecting" || soapResp.NewConnectionStatus == "Authenticating" {
+		output = fmt.Sprintf("WARNING - Connection Status: %s", soapResp.NewConnectionStatus)
+
+		GlobalReturnCode = exitWarning
 	} else {
-		output = fmt.Sprintf("CRITICAL - Connection Status: " + soapResp.NewConnectionStatus)
+		output = fmt.Sprintf("CRITICAL - Connection Status: %s", soapResp.NewConnectionStatus)
 
 		GlobalReturnCode = exitCritical
 	}
