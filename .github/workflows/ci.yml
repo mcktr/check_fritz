@@ -27,6 +27,9 @@ jobs:
       - name: Go Build
         run: make build
 
+      - name: Test checksum
+        run: make test-checksum
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
