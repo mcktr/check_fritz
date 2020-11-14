@@ -26,6 +26,9 @@ jobs:
       - name: Go Build
         run: make build
 
+      - name: Test checksum
+        run: make test-checksum
+
       - name: Create Release Draft
         run: |
           set -x
