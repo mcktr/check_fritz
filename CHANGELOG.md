@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.2 (2020-11-14)
+
+- Bugfix release
+
+* [#106](https://github.com/mcktr/check_fritz/pull/106) (core/build, bug): Fix checksum creation during the build process
+
 ## 1.2.1 (2020-11-07)
 
 - Bugfix release
