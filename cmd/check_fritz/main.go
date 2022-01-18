@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"os"
-
 	"github.com/urfave/cli/v2"
+	"os"
+	"runtime"
 )
 
 // program version
@@ -65,11 +65,6 @@ func (ai *ArgumentInformation) createInputVariable(v string) {
 
 func (ai *ArgumentInformation) setDebugMode() {
 	ai.Debug = true
-}
-
-func printVersion() {
-	fmt.Println("check_fritz v" + Version)
-	GlobalReturnCode = exitOk
 }
 
 func checkRequiredFlags(aI *ArgumentInformation) bool {
@@ -194,7 +189,7 @@ func main() {
 		Action:  checkMain,
 		Name:    "check_fritz",
 		Usage:   "Check plugin to monitor a Fritz!Box",
-		Version: Version,
+		Version: fmt.Sprintf("%s/%s", Version, runtime.Version()),
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:        "hostname",
@@ -294,11 +289,5 @@ METHODS:
 	smart_socketenergy 		Total power consumption of the last year of a socket switch (requires AIN),	
 	smart_status            current smart device status (requires AIN)
 `
-
-	cli.VersionFlag = &cli.BoolFlag{
-		Name: "version", Aliases: []string{"V"},
-		Usage: "print the version",
-	}
-
 	app.Run(os.Args)
 }
