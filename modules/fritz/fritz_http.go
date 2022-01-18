@@ -39,7 +39,7 @@ func DoSoapRequest(soapRequest *SoapData, resps chan<- []byte, errs chan<- error
 
 	// enable this for debug sessions
 	if debug {
-		fmt.Printf("---\nFrist SOAP Response:\n---\n%v\n---\n", string(body))
+		fmt.Printf("---\nFirst SOAP Response:\n---\n%v\n---\n", string(body))
 	}
 
 	// create immediately a new request with authentication
